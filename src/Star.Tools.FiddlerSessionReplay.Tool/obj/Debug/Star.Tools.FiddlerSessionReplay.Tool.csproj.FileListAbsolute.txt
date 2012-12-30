@@ -1,0 +1,13 @@
+C:\Users\joe\Documents\Visual Studio 2012\Projects\ResourceService\src\Star.Tools.FiddlerSessionReplay\Star.Tools.FiddlerSessionReplay.Tool\bin\Debug\Star.Tools.FiddlerSessionReplay.Tool.exe.config
+C:\Users\joe\Documents\Visual Studio 2012\Projects\ResourceService\src\Star.Tools.FiddlerSessionReplay\Star.Tools.FiddlerSessionReplay.Tool\bin\Debug\Star.Tools.FiddlerSessionReplay.Tool.exe
+C:\Users\joe\Documents\Visual Studio 2012\Projects\ResourceService\src\Star.Tools.FiddlerSessionReplay\Star.Tools.FiddlerSessionReplay.Tool\bin\Debug\Star.Tools.FiddlerSessionReplay.Tool.pdb
+C:\Users\joe\Documents\Visual Studio 2012\Projects\ResourceService\src\Star.Tools.FiddlerSessionReplay\Star.Tools.FiddlerSessionReplay.Tool\obj\Debug\Star.Tools.FiddlerSessionReplay.Tool.csprojResolveAssemblyReference.cache
+C:\Users\joe\Documents\Visual Studio 2012\Projects\ResourceService\src\Star.Tools.FiddlerSessionReplay\Star.Tools.FiddlerSessionReplay.Tool\obj\Debug\MainWindow.baml
+C:\Users\joe\Documents\Visual Studio 2012\Projects\ResourceService\src\Star.Tools.FiddlerSessionReplay\Star.Tools.FiddlerSessionReplay.Tool\obj\Debug\MainWindow.g.cs
+C:\Users\joe\Documents\Visual Studio 2012\Projects\ResourceService\src\Star.Tools.FiddlerSessionReplay\Star.Tools.FiddlerSessionReplay.Tool\obj\Debug\App.g.cs
+C:\Users\joe\Documents\Visual Studio 2012\Projects\ResourceService\src\Star.Tools.FiddlerSessionReplay\Star.Tools.FiddlerSessionReplay.Tool\obj\Debug\Star.Tools.FiddlerSessionReplay.Tool_MarkupCompile.cache
+C:\Users\joe\Documents\Visual Studio 2012\Projects\ResourceService\src\Star.Tools.FiddlerSessionReplay\Star.Tools.FiddlerSessionReplay.Tool\obj\Debug\Star.Tools.FiddlerSessionReplay.Tool.g.resources
+C:\Users\joe\Documents\Visual Studio 2012\Projects\ResourceService\src\Star.Tools.FiddlerSessionReplay\Star.Tools.FiddlerSessionReplay.Tool\obj\Debug\Star.Tools.FiddlerSessionReplay.Tool.Properties.Resources.resources
+C:\Users\joe\Documents\Visual Studio 2012\Projects\ResourceService\src\Star.Tools.FiddlerSessionReplay\Star.Tools.FiddlerSessionReplay.Tool\obj\Debug\Star.Tools.FiddlerSessionReplay.Tool.csproj.GenerateResource.Cache
+C:\Users\joe\Documents\Visual Studio 2012\Projects\ResourceService\src\Star.Tools.FiddlerSessionReplay\Star.Tools.FiddlerSessionReplay.Tool\obj\Debug\Star.Tools.FiddlerSessionReplay.Tool.exe
+C:\Users\joe\Documents\Visual Studio 2012\Projects\ResourceService\src\Star.Tools.FiddlerSessionReplay\Star.Tools.FiddlerSessionReplay.Tool\obj\Debug\Star.Tools.FiddlerSessionReplay.Tool.pdb
