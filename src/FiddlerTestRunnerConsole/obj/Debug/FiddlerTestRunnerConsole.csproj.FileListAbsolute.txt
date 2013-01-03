@@ -7,3 +7,5 @@ E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\obj\Debug\FiddlerTestRu
 E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\Common.Logging.dll
 E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\Common.Logging.pdb
 E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\Common.Logging.xml
+E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\FiddlerCore4.dll
+E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\FiddlerCore4.xml

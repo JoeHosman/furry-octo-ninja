@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common.Logging;
+using Fiddler;
 
 namespace FiddlerTestRunnerConsole
 {
@@ -14,6 +15,33 @@ namespace FiddlerTestRunnerConsole
         static void Main(string[] args)
         {
             Log.Info("Main called...");
+
+            FiddlerApplication.OnNotification +=
+                delegate(object sender, NotificationEventArgs oNEA)
+                {
+                    Log.Warn(m => m("NotifyUser: {0}", oNEA.NotifyString));
+
+                    Console.WriteLine("** NotifyUser: " + oNEA.NotifyString);
+                };
+
+            FiddlerApplication.Log.OnLogString +=
+                delegate(object sender, LogEventArgs oLEA)
+                {
+                    Log.Warn(m => m("LogString: {0}", oLEA.LogString));
+                    Console.WriteLine("** LogString: " + oLEA.LogString);
+                };
+
+            Fiddler.FiddlerApplication.BeforeRequest +=
+                delegate(Fiddler.Session oS)
+                {
+                    Log.Info(m => m("BeforeRequest: {0}", oS.url));
+                };
+
+            Fiddler.FiddlerApplication.AfterSessionComplete +=
+                delegate(Fiddler.Session oS)
+                {
+                    Log.Info(m => m("AfterSessionComplete: {0}", oS.url));
+                };
 
             AskUsersInput();
 
@@ -32,13 +60,8 @@ namespace FiddlerTestRunnerConsole
                 Console.Write(">");
                 ConsoleKeyInfo cki = Console.ReadKey();
                 Console.WriteLine();
-                const int inputCleanupThreshold = 1;
-                if (inputCount++ > inputCleanupThreshold)
-                {
-                    Log.Info(m => m("input count '{0}' > InputCleanupThreshold '{1}'", inputCount, inputCleanupThreshold));
-                    GarbageCollection();
-                    inputCount = 0;
-                }
+                const int inputCleanupThreshold = 5;
+
                 switch (cki.KeyChar)
                 {
                     case 'c':
@@ -60,6 +83,7 @@ namespace FiddlerTestRunnerConsole
 
                     case 'q':
                         needMoreInput = false;
+                        inputCount = inputCleanupThreshold + 1;
                         //DoQuit();
                         break;
 
@@ -100,7 +124,12 @@ namespace FiddlerTestRunnerConsole
                         break;
 
                 }
-
+                if (inputCount++ > inputCleanupThreshold)
+                {
+                    Log.Info(m => m("input count '{0}' > InputCleanupThreshold '{1}'", inputCount, inputCleanupThreshold));
+                    GarbageCollection();
+                    inputCount = 0;
+                }
             } while (needMoreInput);
         }
 
