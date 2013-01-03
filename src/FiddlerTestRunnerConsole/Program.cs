@@ -150,7 +150,7 @@ namespace FiddlerTestRunnerConsole
             var inputCount = 0;
             do
             {
-                Console.WriteLine("\nEnter a command [C=Clear; L=List; G=Collect Garbage; W=write SAZ; R=read SAZ;\n\tS=Toggle Forgetful Streaming; T=Toggle Title Counter; Q=Quit]:");
+                Console.WriteLine("\nEnter a command [G=Collect Garbage;\n\tS=Toggle Forgetful Streaming; Q=Quit]:");
                 Console.Write(">");
                 ConsoleKeyInfo cki = Console.ReadKey();
                 Console.WriteLine();
@@ -158,18 +158,6 @@ namespace FiddlerTestRunnerConsole
 
                 switch (cki.KeyChar)
                 {
-                    case 'c':
-                        //Monitor.Enter(oAllSessions);
-                        //oAllSessions.Clear();
-                        //Monitor.Exit(oAllSessions);
-                        //WriteCommandResponse("Clear...");
-                        //FiddlerApplication.Log.LogString("Cleared session list.");
-                        break;
-
-                    case 'l':
-                        //WriteSessionList(oAllSessions);
-                        break;
-
                     case 'g':
                         GarbageCollection();
                         inputCount = 0;
@@ -180,40 +168,13 @@ namespace FiddlerTestRunnerConsole
                         DoQuit();
                         break;
 
-                    case 'r':
-                        //#if SAZ_SUPPORT
-                        //                        ReadSessions(oAllSessions);
-                        //#else
-                        //                        WriteCommandResponse("This demo was compiled without SAZ_SUPPORT defined");
-                        //#endif
-                        break;
 
-                    case 'w':
-                        //#if SAZ_SUPPORT
-                        //                        if (oAllSessions.Count > 0)
-                        //                        {
-                        //                            SaveSessionsToDesktop(oAllSessions);
-                        //                        }
-                        //                        else
-                        //                        {
-                        //                            WriteCommandResponse("No sessions have been captured");
-                        //                        }
-                        //#else
-                        //                        WriteCommandResponse("This demo was compiled without SAZ_SUPPORT defined");
-                        //#endif
-                        break;
-
-                    case 't':
-                        //bUpdateTitle = !bUpdateTitle;
-                        //Console.Title = (bUpdateTitle) ? "Title bar will update with request count..." :
-                        //    "Title bar update suppressed...";
-                        break;
 
                     // Forgetful streaming
                     case 's':
-                        //bool bForgetful = !FiddlerApplication.Prefs.GetBoolPref("fiddler.network.streaming.ForgetStreamedData", false);
-                        //FiddlerApplication.Prefs.SetBoolPref("fiddler.network.streaming.ForgetStreamedData", bForgetful);
-                        //Console.WriteLine(bForgetful ? "FiddlerCore will immediately dump streaming response data." : "FiddlerCore will keep a copy of streamed response data.");
+                        bool bForgetful = !FiddlerApplication.Prefs.GetBoolPref("fiddler.network.streaming.ForgetStreamedData", false);
+                        FiddlerApplication.Prefs.SetBoolPref("fiddler.network.streaming.ForgetStreamedData", bForgetful);
+                        Console.WriteLine(bForgetful ? "FiddlerCore will immediately dump streaming response data." : "FiddlerCore will keep a copy of streamed response data.");
                         break;
 
                 }
