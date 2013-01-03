@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Common.Logging;
 using Fiddler;
@@ -11,6 +12,7 @@ namespace FiddlerTestRunnerConsole
     class Program
     {
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
+        private static bool _needMoreInput;
 
         static void Main(string[] args)
         {
@@ -43,16 +45,32 @@ namespace FiddlerTestRunnerConsole
                     Log.Info(m => m("AfterSessionComplete: {0}", oS.url));
                 };
 
+            Console.CancelKeyPress += new ConsoleCancelEventHandler(Console_CancelKeyPress);
             AskUsersInput();
 
             Log.Info("Main finished.");
+        }
+
+        private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
+        {
+            DoQuit();
+        }
+
+        public static void DoQuit()
+        {
+            _needMoreInput = false;
+            Log.Info("DoQuit Called...");
+            //if (null != oSecureEndpoint) oSecureEndpoint.Dispose();
+            Fiddler.FiddlerApplication.Shutdown();
+            Thread.Sleep(500);
+            Log.Info("Quit Completed.");
         }
 
         private static void AskUsersInput()
         {
             Log.Info("AskUsersInput called...");
 
-            var needMoreInput = true;
+            _needMoreInput = true;
             var inputCount = 0;
             do
             {
@@ -82,9 +100,8 @@ namespace FiddlerTestRunnerConsole
                         break;
 
                     case 'q':
-                        needMoreInput = false;
                         inputCount = inputCleanupThreshold + 1;
-                        //DoQuit();
+                        DoQuit();
                         break;
 
                     case 'r':
@@ -130,7 +147,7 @@ namespace FiddlerTestRunnerConsole
                     GarbageCollection();
                     inputCount = 0;
                 }
-            } while (needMoreInput);
+            } while (_needMoreInput);
         }
 
         private static void GarbageCollection()
