@@ -98,7 +98,6 @@ namespace FiddlerTestRunnerConsole
             // ... or if you don't want a flag in the defaults, "and not" it out:
             // Uncomment the next line if you don't want FiddlerCore to act as the system proxy
             oFCSF = (oFCSF & ~FiddlerCoreStartupFlags.RegisterAsSystemProxy);
-            oFCSF = (oFCSF & ~FiddlerCoreStartupFlags.MonitorAllConnections);
             // or uncomment the next line if you don't want to decrypt SSL traffic.
             // oFCSF = (oFCSF & ~FiddlerCoreStartupFlags.DecryptSSL);
             //
