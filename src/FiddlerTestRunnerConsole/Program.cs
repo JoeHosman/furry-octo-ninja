@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Logging;
@@ -75,6 +74,8 @@ namespace FiddlerTestRunnerConsole
                 delegate(Fiddler.Session oS)
                 {
                     Log.Info(m => m("AfterSessionComplete: {0}", oS.url));
+
+                    var persistentSession = new PersistentFiddlerSession(oS);
                 };
 
             // For the purposes of this demo, we'll forbid connections to HTTPS 
