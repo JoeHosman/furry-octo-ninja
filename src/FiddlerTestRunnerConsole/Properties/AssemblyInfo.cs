@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Demo")]
+[assembly: AssemblyTitle("FiddlerTestRunnerConsole")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Demo")]
-[assembly: AssemblyCopyright("Copyright © Eric Lawrence")]
+[assembly: AssemblyProduct("FiddlerTestRunnerConsole")]
+[assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("33a2109d-0312-4c94-aa51-fbb2a83e63ab")]
+[assembly: Guid("ad65326c-a73c-4635-bcc0-b7ae49249ac8")]
 
 // Version information for an assembly consists of the following four values:
 //
