@@ -9,3 +9,4 @@ E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\Common.Loggin
 E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\Common.Logging.xml
 E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\FiddlerCore4.dll
 E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\FiddlerCore4.xml
+E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\makecert.exe
