@@ -255,7 +255,7 @@ namespace Demo
 
             // For forward-compatibility with updated FiddlerCore libraries, it is strongly recommended that you 
             // start with the DEFAULT options and manually disable specific unwanted options.
-            FiddlerCoreStartupFlags oFCSF = FiddlerCoreStartupFlags.Default;
+            FiddlerCoreStartupFlags oFCSF = FiddlerCoreStartupFlags.None;
 
             // E.g. If you want to add a flag, start with the Defaults and "or" it in:
             // oFCSF = (oFCSF | FiddlerCoreStartupFlags.CaptureFTP);

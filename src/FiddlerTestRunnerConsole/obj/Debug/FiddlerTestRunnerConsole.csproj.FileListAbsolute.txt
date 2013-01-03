@@ -4,3 +4,6 @@ E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\FiddlerTestRu
 E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\obj\Debug\FiddlerTestRunnerConsole.csprojResolveAssemblyReference.cache
 E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\obj\Debug\FiddlerTestRunnerConsole.exe
 E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\obj\Debug\FiddlerTestRunnerConsole.pdb
+E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\Common.Logging.dll
+E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\Common.Logging.pdb
+E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\Common.Logging.xml
