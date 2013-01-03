@@ -1,1 +1,6 @@
 E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\FiddlerTestRunnerConsole.exe.config
+E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\FiddlerTestRunnerConsole.exe
+E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\FiddlerTestRunnerConsole.pdb
+E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\obj\Debug\FiddlerTestRunnerConsole.csprojResolveAssemblyReference.cache
+E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\obj\Debug\FiddlerTestRunnerConsole.exe
+E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\obj\Debug\FiddlerTestRunnerConsole.pdb
