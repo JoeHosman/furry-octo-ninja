@@ -40,6 +40,35 @@ namespace FiddlerTestRunnerConsole
                 delegate(Fiddler.Session oS)
                 {
                     Log.Info(m => m("BeforeRequest: {0}", oS.url));
+
+                    /* If the request is going to our secure endpoint, we'll echo back the response.
+                
+                Note: This BeforeRequest is getting called for both our main proxy tunnel AND our secure endpoint, 
+                so we have to look at which Fiddler port the client connected to (pipeClient.LocalPort) to determine whether this request 
+                was sent to secure endpoint, or was merely sent to the main proxy tunnel (e.g. a CONNECT) in order to *reach* the secure endpoint.
+                
+                As a result of this, if you run the demo and visit https://localhost:7777 in your browser, you'll see
+                
+                Session list contains...
+                 
+                    1 CONNECT http://localhost:7777
+                    200                                         <-- CONNECT tunnel sent to the main proxy tunnel, port 8877
+
+                    2 GET https://localhost:7777/
+                    200 text/html                               <-- GET request decrypted on the main proxy tunnel, port 8877
+
+                    3 GET https://localhost:7777/               
+                    200 text/html                               <-- GET request received by the secure endpoint, port 7777
+                */
+
+                    if ((oS.oRequest.pipeClient.LocalPort == iSecureEndpointPort) && (oS.hostname == sSecureEndpointHostname))
+                    {
+                        oS.utilCreateResponseAndBypassServer();
+                        oS.oResponse.headers.HTTPResponseStatus = "200 Ok";
+                        oS.oResponse["Content-Type"] = "text/html; charset=UTF-8";
+                        oS.oResponse["Cache-Control"] = "private, max-age=0";
+                        oS.utilSetResponseBody("<html><body>Request for httpS://" + sSecureEndpointHostname + ":" + iSecureEndpointPort.ToString() + " received. Your request was:<br /><plaintext>" + oS.oRequest.headers.ToString());
+                    }
                 };
 
             Fiddler.FiddlerApplication.AfterSessionComplete +=
