@@ -10,3 +10,5 @@ E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\Common.Loggin
 E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\FiddlerCore4.dll
 E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\FiddlerCore4.xml
 E:\Dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\makecert.exe
+E:\dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\Ionic.Zip.dll
+E:\dev\git\furry-octo-ninja\src\FiddlerTestRunnerConsole\bin\Debug\Ionic.Zip.xml

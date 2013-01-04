@@ -74,7 +74,20 @@ namespace FiddlerTestRunnerConsole
             Fiddler.FiddlerApplication.AfterSessionComplete +=
                 delegate(Fiddler.Session oS)
                 {
+
+                    if (!((oS.oResponse.MIMEType.ToLower().Contains("html") ||
+                        oS.oResponse.MIMEType.ToLower().Contains("html"))))
+                    {
+                       return;
+                    }
                     Log.Info(m => m("AfterSessionComplete: {0}", oS.url));
+
+                    string savePath = @"E:\data\fiddler\tst\" + oS.SuggestedFilename + ".saz";
+
+                    var saveResult = FiddlerImportExporter.WriteSessionArchive(savePath, new[] { oS });
+                    Log.Info(m => m("WriteSessionResult: {0} '{1}'", saveResult, savePath));
+
+                    var sessions = FiddlerImportExporter.ReadSessionArchive(savePath);
                 };
 
             // For the purposes of this demo, we'll forbid connections to HTTPS 
