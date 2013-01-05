@@ -3,6 +3,5 @@ E:\Dev\git\furry-octo-ninja\examples\FiddlerCore\SampleApp\bin\Debug\Demo.pdb
 E:\Dev\git\furry-octo-ninja\examples\FiddlerCore\SampleApp\bin\Debug\FiddlerCore.dll
 E:\Dev\git\furry-octo-ninja\examples\FiddlerCore\SampleApp\bin\Debug\FiddlerCore.pdb
 E:\Dev\git\furry-octo-ninja\examples\FiddlerCore\SampleApp\bin\Debug\FiddlerCore.xml
-E:\Dev\git\furry-octo-ninja\examples\FiddlerCore\SampleApp\obj\Debug\Demo.csprojResolveAssemblyReference.cache
 E:\Dev\git\furry-octo-ninja\examples\FiddlerCore\SampleApp\obj\Debug\Demo.exe
 E:\Dev\git\furry-octo-ninja\examples\FiddlerCore\SampleApp\obj\Debug\Demo.pdb
