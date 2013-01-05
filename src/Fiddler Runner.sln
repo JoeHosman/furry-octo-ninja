@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiddlerTestRunnerConsole", "FiddlerTestRunnerConsole.csproj", "{A972FE92-BF51-42F7-902D-D863C1B580A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiddlerTestRunnerConsole", "FiddlerTestRunnerConsole\FiddlerTestRunnerConsole.csproj", "{A972FE92-BF51-42F7-902D-D863C1B580A2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{7CAA29F8-9F9F-4DED-8414-746A8B7B24BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "..\..\examples\FiddlerCore\SampleApp\Demo.csproj", "{B4436616-28A2-4B98-9C39-3DA4AC95537E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "..\examples\FiddlerCore\SampleApp\Demo.csproj", "{B4436616-28A2-4B98-9C39-3DA4AC95537E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B195BA67-96C8-479F-9985-0DCFC01248A9}"
 	ProjectSection(SolutionItems) = preProject
