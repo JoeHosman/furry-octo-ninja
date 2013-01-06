@@ -13,26 +13,34 @@
             }
 
             //Prepare for compress
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
-            System.IO.Compression.GZipStream sw = new System.IO.Compression.GZipStream(ms,
-                                                                                       System.IO.Compression.CompressionMode.Compress);
-
-            //Compress
-            sw.Write(byteArray, 0, byteArray.Length);
-            //Close, DO NOT FLUSH cause bytes will go missing...
-            sw.Close();
-
-            //Transform byte[] zip data to string
-            byteArray = ms.ToArray();
-            System.Text.StringBuilder sB = new System.Text.StringBuilder(byteArray.Length);
-            foreach (byte item in byteArray)
+            using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+            using (System.IO.Compression.GZipStream sw = new System.IO.Compression.GZipStream(ms,
+                                                                                         System.IO.Compression.CompressionMode.Compress))
             {
-                sB.Append((char)item);
+                //Compress
+                sw.Write(byteArray, 0, byteArray.Length);
+                //Close, DO NOT FLUSH cause bytes will go missing...
+                sw.Close();
+
+                //Transform byte[] zip data to string
+                byteArray = ms.ToArray();
+
+                ms.Close();
+
+                System.Text.StringBuilder sB = new System.Text.StringBuilder(byteArray.Length);
+                foreach (byte item in byteArray)
+                {
+                    sB.Append((char)item);
+                }
+
+                //// check if we didn't gain anything
+                //if (sB.Length <= s.Length)
+                //{
+                //    return s;
+                //}
+
+                return sB.ToString();
             }
-            ms.Close();
-            sw.Dispose();
-            ms.Dispose();
-            return sB.ToString();
         }
 
         public static string UnZip(string s)

@@ -25,7 +25,7 @@ namespace FiddlerTestRunnerConsole
             #region Fiddler Events
 
             #region Notification Events
-            
+
             FiddlerApplication.OnNotification +=
                 delegate(object sender, NotificationEventArgs oNEA)
                 {
@@ -68,6 +68,26 @@ namespace FiddlerTestRunnerConsole
 
                     if ((oS.oRequest.pipeClient.LocalPort == iSecureEndpointPort) && (oS.hostname == sSecureEndpointHostname))
                     {
+
+                        var Uri = new Uri(oS.url);
+
+                        var path = Uri.AbsolutePath.Replace("7777/", string.Empty);
+                        var query = Uri.Query;
+
+                        switch (path.ToLower())
+                        {
+                            case "response":
+                                oS.utilCreateResponseAndBypassServer();
+                                var id = query.Replace("id=", string.Empty);
+
+                                if (id.StartsWith("?"))
+                                    id = id.Substring(1);
+                                var result = sessionRepo.GetSessionWithId(id);
+
+                                oS.oResponse = result.OSession.oResponse;
+                                return;
+                                break;
+                        }
                         oS.utilCreateResponseAndBypassServer();
                         oS.oResponse.headers.HTTPResponseStatus = "200 Ok";
                         oS.oResponse["Content-Type"] = "text/html; charset=UTF-8";
@@ -145,7 +165,7 @@ namespace FiddlerTestRunnerConsole
 
         private static ISessionRepository GetSessionRepository()
         {
-            throw new NotImplementedException();
+            return new MongoSessionRepository();
         }
 
         #region boreing functions : Elispie, Quitting, Asking for Input, Garbage
