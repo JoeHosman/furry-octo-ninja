@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -234,37 +233,6 @@ namespace FiddlerTestRunnerConsole
     internal interface ISessionRepository
     {
         PersistentFiddlerSession SaveSession(Session oSession);
-    }
-
-    internal class MongoSessionRepository : ISessionRepository
-    {
-        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
-        public PersistentFiddlerSession SaveSession(Session oSession)
-        {
-            var data = GetSessionRawDataString(oSession);
-
-            var persistentSession = new PersistentFiddlerSession(oSession) { RawData = data };
-
-            return persistentSession;
-        }
-
-        private static string GetSessionRawDataString(Session oSession)
-        {
-            string data;
-            using (var ms = new MemoryStream())
-            {
-                var saveResult = FiddlerImportExporter.WriteSessionArchive(ms, new[] { oSession });
-                Log.Info(m => m("WriteSessionResult: {0} '{1}'", saveResult, "memory stream"));
-
-                ms.Position = 0;
-
-                using (var sr = new StreamReader(ms))
-                {
-                    data = sr.ReadToEnd();
-                }
-            }
-            return data;
-        }
     }
 
     internal class PersistentFiddlerSession
