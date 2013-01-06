@@ -65,9 +65,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FiddlerImportExporter.cs" />
-    <Compile Include="FiddlerSessionMongoPersistent.cs" />
+    <Compile Include="ISessionRepository.cs" />
+    <Compile Include="MongoSessionRepository.cs" />
+    <Compile Include="PersistentFiddlerSession.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

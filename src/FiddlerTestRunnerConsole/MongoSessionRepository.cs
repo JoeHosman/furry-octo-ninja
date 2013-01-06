@@ -7,11 +7,18 @@ namespace FiddlerTestRunnerConsole
     internal class MongoSessionRepository : ISessionRepository
     {
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
+
         public PersistentFiddlerSession SaveSession(Session oSession)
         {
             var data = GetSessionRawDataString(oSession);
 
-            var persistentSession = new PersistentFiddlerSession(oSession) { RawData = data };
+            bool bCompress = true;
+            if (bCompress)
+            {
+                data = Utility.Zip(data);
+            }
+
+            var persistentSession = new PersistentFiddlerSession(oSession) { RawData = data, IsCompressed = bCompress };
 
 
 

@@ -20,8 +20,12 @@ namespace FiddlerTestRunnerConsole
         {
             Log.Debug("Main called...");
 
-            ISessionRepository SessionRepo = GetSessionRepository();
+            ISessionRepository sessionRepo = GetSessionRepository();
 
+            #region Fiddler Events
+
+            #region Notification Events
+            
             FiddlerApplication.OnNotification +=
                 delegate(object sender, NotificationEventArgs oNEA)
                 {
@@ -36,7 +40,7 @@ namespace FiddlerTestRunnerConsole
                     Log.Warn(m => m("LogString: {0}", oLEA.LogString));
                     //Console.WriteLine("** LogString: " + oLEA.LogString);
                 };
-
+            #endregion
             Fiddler.FiddlerApplication.BeforeRequest +=
                 delegate(Fiddler.Session oS)
                 {
@@ -81,12 +85,12 @@ namespace FiddlerTestRunnerConsole
                     {
                         return;
                     }
-                    SessionRepo.SaveSession(oS);
+                    sessionRepo.SaveSession(oS);
 
 
-                    oS.PoisonClientPipe();
+                    //oS.PoisonClientPipe();
                 };
-
+            #endregion
             #region Fiddler Setup
 
             // For the purposes of this demo, we'll forbid connections to HTTPS 
@@ -228,22 +232,5 @@ namespace FiddlerTestRunnerConsole
             Console.WriteLine("GC Done.\nWorking Set:\t" + Environment.WorkingSet.ToString("n0"));
         }
         #endregion
-    }
-
-    internal interface ISessionRepository
-    {
-        PersistentFiddlerSession SaveSession(Session oSession);
-    }
-
-    internal class PersistentFiddlerSession
-    {
-        public PersistentFiddlerSession(Session oSession)
-        {
-            Url = oSession.url;
-        }
-
-        public string Url { get; set; }
-
-        public string RawData { get; set; }
     }
 }
