@@ -82,26 +82,8 @@ namespace FiddlerTestRunnerConsole
                     {
                         return;
                     }
+                    SessionRepo.SaveSession(oS);
 
-                    using (MemoryStream ms = new MemoryStream())
-                    {
-
-
-                        //string savePath = @"E:\data\fiddler\tst\" + oS.SuggestedFilename + ".saz";
-
-                        var saveResult = FiddlerImportExporter.WriteSessionArchive(ms, new[] { oS });
-                        Log.Info(m => m("WriteSessionResult: {0} '{1}'", saveResult, "memory stream"));
-                        ms.Position = 0;
-
-                        using (StreamReader sr = new StreamReader(ms))
-                        {
-                            string data = sr.ReadToEnd();
-
-                            SessionRepo.SaveSession(oS, data);
-                        }
-
-                        var sessions = FiddlerImportExporter.ReadSessionArchive(ms);
-                    }
 
                     oS.PoisonClientPipe();
                 };
@@ -251,10 +233,49 @@ namespace FiddlerTestRunnerConsole
 
     internal interface ISessionRepository
     {
-        PersistentFiddlerSession SaveSession(Session oSession, string data);
+        PersistentFiddlerSession SaveSession(Session oSession);
+    }
+
+    internal class MongoSessionRepository : ISessionRepository
+    {
+        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
+        public PersistentFiddlerSession SaveSession(Session oSession)
+        {
+            var data = GetSessionRawDataString(oSession);
+
+            var persistentSession = new PersistentFiddlerSession(oSession) { RawData = data };
+
+            return persistentSession;
+        }
+
+        private static string GetSessionRawDataString(Session oSession)
+        {
+            string data;
+            using (var ms = new MemoryStream())
+            {
+                var saveResult = FiddlerImportExporter.WriteSessionArchive(ms, new[] { oSession });
+                Log.Info(m => m("WriteSessionResult: {0} '{1}'", saveResult, "memory stream"));
+
+                ms.Position = 0;
+
+                using (var sr = new StreamReader(ms))
+                {
+                    data = sr.ReadToEnd();
+                }
+            }
+            return data;
+        }
     }
 
     internal class PersistentFiddlerSession
     {
+        public PersistentFiddlerSession(Session oSession)
+        {
+            Url = oSession.url;
+        }
+
+        public string Url { get; set; }
+
+        public string RawData { get; set; }
     }
 }
