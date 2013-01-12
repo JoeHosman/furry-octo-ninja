@@ -18,27 +18,33 @@ namespace FiddlerTestRunnerConsole
 
         static void Main(string[] args)
         {
-            Log.Info("Main called...");
+            Log.Debug("Main called...");
+
+            ISessionRepository sessionRepo = GetSessionRepository();
+
+            #region Fiddler Events
+
+            #region Notification Events
 
             FiddlerApplication.OnNotification +=
                 delegate(object sender, NotificationEventArgs oNEA)
                 {
                     Log.Warn(m => m("NotifyUser: {0}", oNEA.NotifyString));
 
-                    Console.WriteLine("** NotifyUser: " + oNEA.NotifyString);
+                    //Console.WriteLine("** NotifyUser: " + oNEA.NotifyString);
                 };
 
             FiddlerApplication.Log.OnLogString +=
                 delegate(object sender, LogEventArgs oLEA)
                 {
                     Log.Warn(m => m("LogString: {0}", oLEA.LogString));
-                    Console.WriteLine("** LogString: " + oLEA.LogString);
+                    //Console.WriteLine("** LogString: " + oLEA.LogString);
                 };
-
+            #endregion
             Fiddler.FiddlerApplication.BeforeRequest +=
                 delegate(Fiddler.Session oS)
                 {
-                    Log.Info(m => m("BeforeRequest: {0}", oS.url));
+                    Log.Debug(m => m("BeforeRequest: {0}", oS.url));
 
                     /* If the request is going to our secure endpoint, we'll echo back the response.
                 
@@ -62,6 +68,28 @@ namespace FiddlerTestRunnerConsole
 
                     if ((oS.oRequest.pipeClient.LocalPort == iSecureEndpointPort) && (oS.hostname == sSecureEndpointHostname))
                     {
+
+                        var Uri = new Uri(oS.url);
+
+                        var path = Uri.AbsolutePath.Replace("7777/", string.Empty);
+                        var query = Uri.Query;
+
+                        switch (path.ToLower())
+                        {
+                            case "response":
+                                oS.utilCreateResponseAndBypassServer();
+                                var id = query.Replace("id=", string.Empty);
+
+                                if (id.StartsWith("?"))
+                                    id = id.Substring(1);
+                                var result = sessionRepo.GetSessionWithId(id);
+
+                                oS.responseBodyBytes = result.OSession.responseBodyBytes;
+                                oS.oResponse.headers = (HTTPResponseHeaders)result.OSession.oResponse.headers.Clone();
+
+                                return;
+                                break;
+                        }
                         oS.utilCreateResponseAndBypassServer();
                         oS.oResponse.headers.HTTPResponseStatus = "200 Ok";
                         oS.oResponse["Content-Type"] = "text/html; charset=UTF-8";
@@ -73,22 +101,30 @@ namespace FiddlerTestRunnerConsole
             Fiddler.FiddlerApplication.AfterSessionComplete +=
                 delegate(Fiddler.Session oS)
                 {
-
+                    Log.Debug(m => m("AfterSessionComplete: {0}", Elispie(oS.url, 50)));
                     if (!((oS.oResponse.MIMEType.ToLower().Contains("html") ||
                         oS.oResponse.MIMEType.ToLower().Contains("html"))))
                     {
-                       return;
+                        return;
                     }
-                    Log.Info(m => m("AfterSessionComplete: {0}", oS.url));
 
-                    string savePath = @"E:\data\fiddler\tst\" + oS.SuggestedFilename + ".saz";
+                    if (oS.uriContains("localhost"))
+                    {
+                        return;
+                    }
 
-                    var saveResult = FiddlerImportExporter.WriteSessionArchive(savePath, new[] { oS });
-                    Log.Info(m => m("WriteSessionResult: {0} '{1}'", saveResult, savePath));
+                    //if (!oS.uriContains("ticketmaster.com/event"))
+                    //{
+                    //    return;
 
-                    var sessions = FiddlerImportExporter.ReadSessionArchive(savePath);
+                    //}
+                    sessionRepo.SaveSession(oS);
 
+
+                    //oS.PoisonClientPipe();
                 };
+            #endregion
+            #region Fiddler Setup
 
             // For the purposes of this demo, we'll forbid connections to HTTPS 
             // sites that use invalid certificates. Change this from the default only
@@ -116,6 +152,7 @@ namespace FiddlerTestRunnerConsole
             //
             // NOTE: Unless you disable the option to decrypt HTTPS traffic, makecert.exe
             // must be present in this executable's folder.
+            #endregion
 
             // NOTE: In the next line, you can pass 0 for the port (instead of 8877) to have FiddlerCore auto-select an available port
             Fiddler.FiddlerApplication.Startup(8877, oFCSF);
@@ -133,10 +170,29 @@ namespace FiddlerTestRunnerConsole
                 FiddlerApplication.Log.LogFormat("Created secure end point listening on port {0}, using a HTTPS certificate for '{1}'", iSecureEndpointPort, sSecureEndpointHostname);
             }
 
-            Console.CancelKeyPress += new ConsoleCancelEventHandler(Console_CancelKeyPress);
+            Console.CancelKeyPress += Console_CancelKeyPress;
             AskUsersInput();
 
             Log.Info("Main finished.");
+        }
+
+        private static ISessionRepository GetSessionRepository()
+        {
+            return new MongoSessionRepository();
+        }
+
+        #region boreing functions : Elispie, Quitting, Asking for Input, Garbage
+
+        private static string Elispie(string s, int limit)
+        {
+            if (s.Length < limit)
+            {
+                return s;
+            }
+
+            var outS = s.Substring(0, limit - 1) + "...";
+
+            return outS;
         }
 
         private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
@@ -208,5 +264,6 @@ namespace FiddlerTestRunnerConsole
             Log.Info(m => m("GarbageCollection Done Working Set:\t{0}", Environment.WorkingSet.ToString("n0")));
             Console.WriteLine("GC Done.\nWorking Set:\t" + Environment.WorkingSet.ToString("n0"));
         }
+        #endregion
     }
 }
