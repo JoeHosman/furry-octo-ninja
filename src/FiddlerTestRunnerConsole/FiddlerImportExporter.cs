@@ -19,7 +19,7 @@ namespace FiddlerTestRunnerConsole
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
         public static readonly Encoding SuggestedEncoding = Encoding.Unicode;
 
-        public static Session[] ReadSessionArchive(string filePath)
+        public static bool ReadSessionArchive(string filePath, out Session[] oSessions)
         {
             if (!File.Exists(filePath))
             {
@@ -74,7 +74,8 @@ namespace FiddlerTestRunnerConsole
                     throw;
                 }
             }
-            return outSessions.ToArray();
+            oSessions = outSessions.ToArray();
+            return true;
         }
         public static Session[] ReadSessionArchive(Stream stream)
         {

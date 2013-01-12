@@ -84,7 +84,9 @@ namespace FiddlerTestRunnerConsole
                                     id = id.Substring(1);
                                 var result = sessionRepo.GetSessionWithId(id);
 
-                                oS.oResponse = result.OSession.oResponse;
+                                oS.responseBodyBytes = result.OSession.responseBodyBytes;
+                                oS.oResponse.headers = (HTTPResponseHeaders)result.OSession.oResponse.headers.Clone();
+
                                 return;
                                 break;
                         }
@@ -99,12 +101,23 @@ namespace FiddlerTestRunnerConsole
             Fiddler.FiddlerApplication.AfterSessionComplete +=
                 delegate(Fiddler.Session oS)
                 {
-                    Log.Info(m => m("AfterSessionComplete: {0}", Elispie(oS.url, 50)));
+                    Log.Debug(m => m("AfterSessionComplete: {0}", Elispie(oS.url, 50)));
                     if (!((oS.oResponse.MIMEType.ToLower().Contains("html") ||
                         oS.oResponse.MIMEType.ToLower().Contains("html"))))
                     {
                         return;
                     }
+
+                    if (oS.uriContains("localhost"))
+                    {
+                        return;
+                    }
+
+                    //if (!oS.uriContains("ticketmaster.com/event"))
+                    //{
+                    //    return;
+
+                    //}
                     sessionRepo.SaveSession(oS);
 
 

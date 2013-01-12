@@ -26,7 +26,7 @@ namespace FiddlerTestRunnerConsole
 
         public string Data { get; set; }
 
-        public int Len { get; set; }
+        public long Len { get; set; }
 
         public void SetSession(Session session)
         {
