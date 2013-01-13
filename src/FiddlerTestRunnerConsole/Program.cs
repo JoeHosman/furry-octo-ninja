@@ -73,28 +73,67 @@ namespace FiddlerTestRunnerConsole
 
                         var path = Uri.AbsolutePath.Replace("7777/", string.Empty);
                         var query = Uri.Query;
+                        //oS.utilCreateResponseAndBypassServer();
 
+                        string id;
                         switch (path.ToLower())
                         {
+                            case "index":
+                                SetSessionAsSessionIndexPage(oS);
+
+                                break;
+
                             case "response":
-                                oS.utilCreateResponseAndBypassServer();
-                                var id = query.Replace("id=", string.Empty);
+                                id = query.Replace("id=", string.Empty);
 
                                 if (id.StartsWith("?"))
                                     id = id.Substring(1);
-                                var result = sessionRepo.GetSessionWithId(id);
 
-                                oS.responseBodyBytes = result.OSession.responseBodyBytes;
-                                oS.oResponse.headers = (HTTPResponseHeaders)result.OSession.oResponse.headers.Clone();
+                                SetSessionAsResponseReplay(id, oS);
 
-                                return;
                                 break;
+
+                            case "diff":
+                                id = query.Replace("id=", string.Empty);
+
+                                if (id.StartsWith("?"))
+                                    id = id.Substring(1);
+
+                                SetSessionAsRequestDifferenceReport(id, oS);
+                                break;
+
+                            case "diffIndex":
+                                id = query.Replace("id=", string.Empty);
+
+                                if (id.StartsWith("?"))
+                                    id = id.Substring(1);
+
+                                SetSessionAsRequestDifferenceIndexPage(id, oS);
+                                break;
+
+                            case "details":
+                                id = query.Replace("id=", string.Empty);
+
+                                if (id.StartsWith("?"))
+                                    id = id.Substring(1);
+
+                                SetSessionAsSessionDetailsPage(id, oS);
+                                break;
+
+                            case "delete":
+                                id = query.Replace("id=", string.Empty);
+
+                                if (id.StartsWith("?"))
+                                    id = id.Substring(1);
+
+                                SetSessionAsDeleteConfirmPage(id, oS);
+                                break;
+                            default:
+                                SetSessionAsHelpPage(oS);
+                                break;
+
                         }
-                        oS.utilCreateResponseAndBypassServer();
-                        oS.oResponse.headers.HTTPResponseStatus = "200 Ok";
-                        oS.oResponse["Content-Type"] = "text/html; charset=UTF-8";
-                        oS.oResponse["Cache-Control"] = "private, max-age=0";
-                        oS.utilSetResponseBody("<html><body>Request for httpS://" + sSecureEndpointHostname + ":" + iSecureEndpointPort.ToString() + " received. Your request was:<br /><plaintext>" + oS.oRequest.headers.ToString());
+
                     }
                 };
 
@@ -174,6 +213,92 @@ namespace FiddlerTestRunnerConsole
             AskUsersInput();
 
             Log.Info("Main finished.");
+        }
+
+        private static void SetSessionAsDeleteConfirmPage(string id, Session oS)
+        {
+            oS.utilCreateResponseAndBypassServer();
+            oS.oResponse.headers.HTTPResponseStatus = "200 Ok";
+            oS.oResponse["Content-Type"] = "text/html; charset=UTF-8";
+            oS.oResponse["Cache-Control"] = "private, max-age=0";
+
+            string content = "Request for httpS://" + sSecureEndpointHostname + ":" +
+                    iSecureEndpointPort.ToString() + " received. Your request was:<br /><plaintext>" +
+                    oS.oRequest.headers.ToString();
+            oS.utilSetResponseBody(BootstrapUtility.BuildBootstrapPage("Session Delete", content));
+        }
+
+        private static void SetSessionAsSessionDetailsPage(string id, Session oS)
+        {
+            oS.utilCreateResponseAndBypassServer();
+            oS.oResponse.headers.HTTPResponseStatus = "200 Ok";
+            oS.oResponse["Content-Type"] = "text/html; charset=UTF-8";
+            oS.oResponse["Cache-Control"] = "private, max-age=0";
+
+            string content = "Request for httpS://" + sSecureEndpointHostname + ":" +
+                      iSecureEndpointPort.ToString() + " received. Your request was:<br /><plaintext>" +
+                      oS.oRequest.headers.ToString();
+            oS.utilSetResponseBody(BootstrapUtility.BuildBootstrapPage("Session Details", content));
+        }
+
+        private static void SetSessionAsRequestDifferenceIndexPage(string id, Session oS)
+        {
+            oS.utilCreateResponseAndBypassServer();
+            oS.oResponse.headers.HTTPResponseStatus = "200 Ok";
+            oS.oResponse["Content-Type"] = "text/html; charset=UTF-8";
+            oS.oResponse["Cache-Control"] = "private, max-age=0";
+
+            string content = "Request for httpS://" + sSecureEndpointHostname + ":" +
+                 iSecureEndpointPort.ToString() + " received. Your request was:<br /><plaintext>" +
+                 oS.oRequest.headers.ToString();
+            oS.utilSetResponseBody(BootstrapUtility.BuildBootstrapPage("Request Diff Index", content));
+        }
+
+        private static void SetSessionAsRequestDifferenceReport(string id, Session oS)
+        {
+            oS.utilCreateResponseAndBypassServer();
+            oS.oResponse.headers.HTTPResponseStatus = "200 Ok";
+            oS.oResponse["Content-Type"] = "text/html; charset=UTF-8";
+            oS.oResponse["Cache-Control"] = "private, max-age=0";
+
+            string content = "Request for httpS://" + sSecureEndpointHostname + ":" +
+           iSecureEndpointPort.ToString() + " received. Your request was:<br /><plaintext>" +
+           oS.oRequest.headers.ToString();
+            oS.utilSetResponseBody(BootstrapUtility.BuildBootstrapPage("Request Difference", content));
+        }
+
+        private static void SetSessionAsHelpPage(Session oS)
+        {
+            oS.utilCreateResponseAndBypassServer();
+            oS.oResponse.headers.HTTPResponseStatus = "200 Ok";
+            oS.oResponse["Content-Type"] = "text/html; charset=UTF-8";
+            oS.oResponse["Cache-Control"] = "private, max-age=0";
+
+            string content = "<p class=\"text-info\">Hello World</p>";
+            oS.utilSetResponseBody(BootstrapUtility.BuildBootstrapPage("Help", content));
+        }
+
+        private static void SetSessionAsSessionIndexPage(Session oS)
+        {
+            oS.utilCreateResponseAndBypassServer();
+            oS.oResponse.headers.HTTPResponseStatus = "200 Ok";
+            oS.oResponse["Content-Type"] = "text/html; charset=UTF-8";
+            oS.oResponse["Cache-Control"] = "private, max-age=0";
+
+            string content = "Request for httpS://" + sSecureEndpointHostname + ":" +
+            iSecureEndpointPort.ToString() + " received. Your request was:<br /><plaintext>" +
+            oS.oRequest.headers.ToString();
+            oS.utilSetResponseBody(BootstrapUtility.BuildBootstrapPage("Session Index", content));
+        }
+
+        private static void SetSessionAsResponseReplay(string id, Session oS)
+        {
+            var sessionRepo = GetSessionRepository();
+
+            var result = sessionRepo.GetSessionWithId(id);
+            oS.utilCreateResponseAndBypassServer();
+            oS.responseBodyBytes = result.OSession.responseBodyBytes;
+            oS.oResponse.headers = (HTTPResponseHeaders)result.OSession.oResponse.headers.Clone();
         }
 
         private static ISessionRepository GetSessionRepository()
@@ -265,5 +390,27 @@ namespace FiddlerTestRunnerConsole
             Console.WriteLine("GC Done.\nWorking Set:\t" + Environment.WorkingSet.ToString("n0"));
         }
         #endregion
+    }
+
+    static class BootstrapUtility
+    {
+        public static string BuildBootstrapPage(string title, string content)
+        {
+            string html = "    <!DOCTYPE html>" +
+       " <html>" +
+        "<head>" +
+        "<title>" + title + "</title>" +
+        "<!-- Bootstrap -->" +
+        "<link href=\"http://twitter.github.com/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\" media=\"screen\">" +
+        "</head>" +
+        "<body>" +
+        content +
+        "<script src=\"http://code.jquery.com/jquery-latest.js\"></script>" +
+        "<script src=\"http://twitter.github.com/bootstrap/js/bootstrap.min.js\"></script>" +
+        "</body>" +
+                "</html>";
+
+            return html;
+        }
     }
 }
