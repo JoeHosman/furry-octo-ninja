@@ -36,7 +36,7 @@ namespace FiddlerTestRunnerConsole
             var repo = new MongoRepository.MongoRepository<PersistentFiddlerSession>();
 
             repo.Add(persistentSession);
-            Log.Info(m => m("Saved session id: '{0}'", persistentSession.Id));
+            Log.Info(m => m("Saved session id: '{0}' '{1}'", persistentSession.Id, Program.Elispie(persistentSession.Url, 50)));
             return persistentSession;
         }
 
@@ -144,7 +144,7 @@ namespace FiddlerTestRunnerConsole
             using (var ms = new MemoryStream())
             {
                 var saveResult = FiddlerImportExporter.WriteSessionArchive(ms, new[] { oSession });
-                Log.Info(m => m("WriteSessionResult: {0} '{1}'", saveResult, "memory stream"));
+                Log.Debug(m => m("WriteSessionResult: {0} '{1}'", saveResult, "memory stream"));
 
                 ms.Position = 0;
 

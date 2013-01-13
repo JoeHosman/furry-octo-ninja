@@ -15,6 +15,7 @@ namespace FiddlerTestRunnerConsole
         private static Proxy _oSecureEndpoint;
         static string sSecureEndpointHostname = "localhost";
         static int iSecureEndpointPort = 7777;
+        private static bool _record;
 
         static void Main(string[] args)
         {
@@ -140,7 +141,10 @@ namespace FiddlerTestRunnerConsole
             Fiddler.FiddlerApplication.AfterSessionComplete +=
                 delegate(Fiddler.Session oS)
                 {
-                    Log.Debug(m => m("AfterSessionComplete: {0}", Elispie(oS.url, 50)));
+                    if (!_record)
+                        return;
+
+
                     if (!((oS.oResponse.MIMEType.ToLower().Contains("html") ||
                         oS.oResponse.MIMEType.ToLower().Contains("html"))))
                     {
@@ -157,6 +161,7 @@ namespace FiddlerTestRunnerConsole
                     //    return;
 
                     //}
+                    Log.Info(m => m("Saving Session: {0}", Elispie(oS.url, 50)));
                     sessionRepo.SaveSession(oS);
 
 
@@ -308,7 +313,7 @@ namespace FiddlerTestRunnerConsole
 
         #region boreing functions : Elispie, Quitting, Asking for Input, Garbage
 
-        private static string Elispie(string s, int limit)
+        public static string Elispie(string s, int limit)
         {
             if (s.Length < limit)
             {
@@ -343,7 +348,7 @@ namespace FiddlerTestRunnerConsole
             var inputCount = 0;
             do
             {
-                Console.WriteLine("\nEnter a command [G=Collect Garbage;\n\tS=Toggle Forgetful Streaming; Q=Quit]:");
+                Console.WriteLine("\nEnter a command [G=Collect Garbage;\n\tR=Toggle Recording; Q=Quit]:");
                 Console.Write(">");
                 ConsoleKeyInfo cki = Console.ReadKey();
                 Console.WriteLine();
@@ -361,7 +366,16 @@ namespace FiddlerTestRunnerConsole
                         DoQuit();
                         break;
 
+                    case 'r':
+                        _record = !_record;
 
+                        if (_record)
+                            Log.Info("Recording.");
+                        else
+                        {
+                            Log.Info("NOT Recording");
+                        }
+                        break;
 
                     // Forgetful streaming
                     case 's':

@@ -153,14 +153,14 @@ namespace FiddlerTestRunnerConsole
 
         public static bool WriteSessionArchive(string filePath, Session[] arrSessions)
         {
-            Log.Info(m => m("Writing [{1}] Sessions to {0}  No Password", filePath, arrSessions.Count()));
+            Log.Debug(m => m("Writing [{1}] Sessions to {0}  No Password", filePath, arrSessions.Count()));
             return WriteSessionArchive(filePath, arrSessions, string.Empty);
         }
         public static bool WriteSessionArchive(string filePath, Session[] arrSessions, string password)
         {
             var filename = System.IO.Path.GetFileNameWithoutExtension(filePath);
 
-            Log.Info(m => m("Writing Filename:{0}  password Length:'{2}', full-path:'{1}'", filename, filePath, password.Length));
+            Log.Debug(m => m("Writing Filename:{0}  password Length:'{2}', full-path:'{1}'", filename, filePath, password.Length));
 
             if (null == arrSessions)
             {
@@ -182,7 +182,7 @@ namespace FiddlerTestRunnerConsole
                     System.IO.File.Delete(filePath);
                 }
 
-                Log.Info(m => m("Creating ZipFile '{0}' with encoding '{1}'", filePath, SuggestedEncoding.EncodingName));
+                Log.Debug(m => m("Creating ZipFile '{0}' with encoding '{1}'", filePath, SuggestedEncoding.EncodingName));
 
                 using (var streamWriter = new StreamWriter(filePath, false, SuggestedEncoding))
                 {
