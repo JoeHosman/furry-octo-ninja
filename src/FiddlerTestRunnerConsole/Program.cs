@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Common.Logging;
 using Fiddler;
+using MongoRepository;
 
 namespace FiddlerTestRunnerConsole
 {
@@ -13,160 +11,34 @@ namespace FiddlerTestRunnerConsole
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
         private static bool _needMoreInput;
         private static Proxy _oSecureEndpoint;
-        static string sSecureEndpointHostname = "localhost";
-        static int iSecureEndpointPort = 7777;
+        private const string SecureEndpointHostname = "localhost";
+        private const int SecureEndpointPort = 7777;
         private static bool _record;
+        private static ISessionRepository _sessionRepo;
+        private static SessionGroupSequence _sessionGroupSequence = SessionGroupSequence.Empty;
+        private static SessionGroup _sessionGroup = SessionGroup;
 
         static void Main(string[] args)
         {
             Log.Debug("Main called...");
 
-            ISessionRepository sessionRepo = GetSessionRepository();
+            _sessionRepo = GetSessionRepository();
 
             #region Fiddler Events
 
             #region Notification Events
 
             FiddlerApplication.OnNotification +=
-                delegate(object sender, NotificationEventArgs oNEA)
-                {
-                    Log.Warn(m => m("NotifyUser: {0}", oNEA.NotifyString));
-
-                    //Console.WriteLine("** NotifyUser: " + oNEA.NotifyString);
-                };
+                OnNotification;
 
             FiddlerApplication.Log.OnLogString +=
-                delegate(object sender, LogEventArgs oLEA)
-                {
-                    Log.Warn(m => m("LogString: {0}", oLEA.LogString));
-                    //Console.WriteLine("** LogString: " + oLEA.LogString);
-                };
+                OnLogString;
             #endregion
-            Fiddler.FiddlerApplication.BeforeRequest +=
-                delegate(Fiddler.Session oS)
-                {
-                    Log.Debug(m => m("BeforeRequest: {0}", oS.url));
+            FiddlerApplication.BeforeRequest +=
+                OnRequest;
 
-                    /* If the request is going to our secure endpoint, we'll echo back the response.
-                
-                Note: This BeforeRequest is getting called for both our main proxy tunnel AND our secure endpoint, 
-                so we have to look at which Fiddler port the client connected to (pipeClient.LocalPort) to determine whether this request 
-                was sent to secure endpoint, or was merely sent to the main proxy tunnel (e.g. a CONNECT) in order to *reach* the secure endpoint.
-                
-                As a result of this, if you run the demo and visit https://localhost:7777 in your browser, you'll see
-                
-                Session list contains...
-                 
-                    1 CONNECT http://localhost:7777
-                    200                                         <-- CONNECT tunnel sent to the main proxy tunnel, port 8877
-
-                    2 GET https://localhost:7777/
-                    200 text/html                               <-- GET request decrypted on the main proxy tunnel, port 8877
-
-                    3 GET https://localhost:7777/               
-                    200 text/html                               <-- GET request received by the secure endpoint, port 7777
-                */
-
-                    if ((oS.oRequest.pipeClient.LocalPort == iSecureEndpointPort) && (oS.hostname == sSecureEndpointHostname))
-                    {
-
-                        var Uri = new Uri(oS.url);
-
-                        var path = Uri.AbsolutePath.Replace("7777/", string.Empty);
-                        var query = Uri.Query;
-                        //oS.utilCreateResponseAndBypassServer();
-
-                        string id;
-                        switch (path.ToLower())
-                        {
-                            case "index":
-                                SetSessionAsSessionIndexPage(oS);
-
-                                break;
-
-                            case "response":
-                                id = query.Replace("id=", string.Empty);
-
-                                if (id.StartsWith("?"))
-                                    id = id.Substring(1);
-
-                                SetSessionAsResponseReplay(id, oS);
-
-                                break;
-
-                            case "diff":
-                                id = query.Replace("id=", string.Empty);
-
-                                if (id.StartsWith("?"))
-                                    id = id.Substring(1);
-
-                                SetSessionAsRequestDifferenceReport(id, oS);
-                                break;
-
-                            case "diffIndex":
-                                id = query.Replace("id=", string.Empty);
-
-                                if (id.StartsWith("?"))
-                                    id = id.Substring(1);
-
-                                SetSessionAsRequestDifferenceIndexPage(id, oS);
-                                break;
-
-                            case "details":
-                                id = query.Replace("id=", string.Empty);
-
-                                if (id.StartsWith("?"))
-                                    id = id.Substring(1);
-
-                                SetSessionAsSessionDetailsPage(id, oS);
-                                break;
-
-                            case "delete":
-                                id = query.Replace("id=", string.Empty);
-
-                                if (id.StartsWith("?"))
-                                    id = id.Substring(1);
-
-                                SetSessionAsDeleteConfirmPage(id, oS);
-                                break;
-                            default:
-                                SetSessionAsHelpPage(oS);
-                                break;
-
-                        }
-
-                    }
-                };
-
-            Fiddler.FiddlerApplication.AfterSessionComplete +=
-                delegate(Fiddler.Session oS)
-                {
-                    if (!_record)
-                        return;
-
-
-                    if (!((oS.oResponse.MIMEType.ToLower().Contains("html") ||
-                        oS.oResponse.MIMEType.ToLower().Contains("html"))))
-                    {
-                        return;
-                    }
-
-                    if (oS.uriContains("localhost"))
-                    {
-                        return;
-                    }
-
-                    //if (!oS.uriContains("ticketmaster.com/event"))
-                    //{
-                    //    return;
-
-                    //}
-                    Log.Info(m => m("Saving Session: {0}", Elispie(oS.url, 50)));
-                    sessionRepo.SaveSession(oS);
-
-
-                    //oS.PoisonClientPipe();
-                };
+            FiddlerApplication.AfterSessionComplete +=
+                OnSessionComplete;
             #endregion
             #region Fiddler Setup
 
@@ -208,55 +80,118 @@ namespace FiddlerTestRunnerConsole
 
             // We'll also create a HTTPS listener, useful for when FiddlerCore is masquerading as a HTTPS server
             // instead of acting as a normal CERN-style proxy server.
-            _oSecureEndpoint = FiddlerApplication.CreateProxyEndpoint(iSecureEndpointPort, true, sSecureEndpointHostname);
+            _oSecureEndpoint = FiddlerApplication.CreateProxyEndpoint(SecureEndpointPort, true, SecureEndpointHostname);
             if (null != _oSecureEndpoint)
             {
-                FiddlerApplication.Log.LogFormat("Created secure end point listening on port {0}, using a HTTPS certificate for '{1}'", iSecureEndpointPort, sSecureEndpointHostname);
+                FiddlerApplication.Log.LogFormat("Created secure end point listening on port {0}, using a HTTPS certificate for '{1}'", SecureEndpointPort, SecureEndpointHostname);
             }
 
-            Console.CancelKeyPress += Console_CancelKeyPress;
+            Console.CancelKeyPress += ConsoleCancelKeyPress;
             AskUsersInput();
 
             Log.Info("Main finished.");
         }
 
-        private static void SetSessionAsDeleteConfirmPage(string id, Session oS)
+        private static void OnSessionComplete(Session oS)
         {
-            oS.utilCreateResponseAndBypassServer();
-            oS.oResponse.headers.HTTPResponseStatus = "200 Ok";
-            oS.oResponse["Content-Type"] = "text/html; charset=UTF-8";
-            oS.oResponse["Cache-Control"] = "private, max-age=0";
+            if (!_record)
+                return;
 
-            string content = "Request for httpS://" + sSecureEndpointHostname + ":" +
-                    iSecureEndpointPort.ToString() + " received. Your request was:<br /><plaintext>" +
-                    oS.oRequest.headers.ToString();
-            oS.utilSetResponseBody(BootstrapUtility.BuildBootstrapPage("Session Delete", content));
+
+            if (!((oS.oResponse.MIMEType.ToLower().Contains("html") || oS.oResponse.MIMEType.ToLower().Contains("html"))))
+            {
+                return;
+            }
+
+            if (oS.uriContains("localhost"))
+            {
+                return;
+            }
+
+            if (SessionGroupSequence.Empty == _sessionGroupSequence)
+            {
+                Log.Info("Empty group sequence; creating new one.");
+            }
+
+            if (SessionGroup.Empty == _sessionGroup)
+            {
+                Log.Info("Empty group; creating new one.");
+            }
+
+            Log.Info(m => m("Saving Session: {0}", Elispie(oS.url, 50)));
+            _sessionRepo.SaveSession(oS);
         }
 
-        private static void SetSessionAsSessionDetailsPage(string id, Session oS)
+        private static void OnRequest(Session oS)
         {
-            oS.utilCreateResponseAndBypassServer();
-            oS.oResponse.headers.HTTPResponseStatus = "200 Ok";
-            oS.oResponse["Content-Type"] = "text/html; charset=UTF-8";
-            oS.oResponse["Cache-Control"] = "private, max-age=0";
+            Log.Debug(m => m("BeforeRequest: {0}", oS.url));
 
-            string content = "Request for httpS://" + sSecureEndpointHostname + ":" +
-                      iSecureEndpointPort.ToString() + " received. Your request was:<br /><plaintext>" +
-                      oS.oRequest.headers.ToString();
-            oS.utilSetResponseBody(BootstrapUtility.BuildBootstrapPage("Session Details", content));
+            /* If the request is going to our secure endpoint, we'll echo back the response.
+                
+                Note: This BeforeRequest is getting called for both our main proxy tunnel AND our secure endpoint, 
+                so we have to look at which Fiddler port the client connected to (pipeClient.LocalPort) to determine whether this request 
+                was sent to secure endpoint, or was merely sent to the main proxy tunnel (e.g. a CONNECT) in order to *reach* the secure endpoint.
+                
+                As a result of this, if you run the demo and visit https://localhost:7777 in your browser, you'll see
+                
+                Session list contains...
+                 
+                    1 CONNECT http://localhost:7777
+                    200                                         <-- CONNECT tunnel sent to the main proxy tunnel, port 8877
+
+                    2 GET https://localhost:7777/
+                    200 text/html                               <-- GET request decrypted on the main proxy tunnel, port 8877
+
+                    3 GET https://localhost:7777/               
+                    200 text/html                               <-- GET request received by the secure endpoint, port 7777
+                */
+
+            if (oS.hostname != SecureEndpointHostname)
+                return;
+
+            var uri = new Uri(oS.url);
+
+            var path = uri.AbsolutePath.Replace("7777/", string.Empty);
+            var query = uri.Query;
+
+            string id;
+            switch (path.ToLower())
+            {
+                case "response":
+                    id = query.Replace("id=", string.Empty);
+
+                    if (id.StartsWith("?"))
+                        id = id.Substring(1);
+
+                    SetSessionAsResponseReplay(id, oS);
+                    break;
+
+                case "diff":
+                    id = query.Replace("id=", string.Empty);
+
+                    if (id.StartsWith("?"))
+                        id = id.Substring(1);
+
+                    SetSessionAsRequestDifferenceReport(id, oS);
+                    break;
+
+                default:
+                    SetSessionAsHelpPage(oS);
+                    break;
+            }
         }
 
-        private static void SetSessionAsRequestDifferenceIndexPage(string id, Session oS)
+        private static void OnLogString(object sender, LogEventArgs oLEA)
         {
-            oS.utilCreateResponseAndBypassServer();
-            oS.oResponse.headers.HTTPResponseStatus = "200 Ok";
-            oS.oResponse["Content-Type"] = "text/html; charset=UTF-8";
-            oS.oResponse["Cache-Control"] = "private, max-age=0";
+            Log.Debug(m => m("LogString: {0}", oLEA.LogString));
+            //Console.WriteLine("** LogString: " + oLEA.LogString);
+        }
 
-            string content = "Request for httpS://" + sSecureEndpointHostname + ":" +
-                 iSecureEndpointPort.ToString() + " received. Your request was:<br /><plaintext>" +
-                 oS.oRequest.headers.ToString();
-            oS.utilSetResponseBody(BootstrapUtility.BuildBootstrapPage("Request Diff Index", content));
+        private static void OnNotification(object sender, NotificationEventArgs oNEA)
+        {
+            Log.Warn(m => m("NotifyUser: {0}", oNEA.NotifyString));
+
+            //Console.WriteLine("** NotifyUser: " + oNEA.NotifyString);
         }
 
         private static void SetSessionAsRequestDifferenceReport(string id, Session oS)
@@ -266,9 +201,9 @@ namespace FiddlerTestRunnerConsole
             oS.oResponse["Content-Type"] = "text/html; charset=UTF-8";
             oS.oResponse["Cache-Control"] = "private, max-age=0";
 
-            string content = "Request for httpS://" + sSecureEndpointHostname + ":" +
-           iSecureEndpointPort.ToString() + " received. Your request was:<br /><plaintext>" +
-           oS.oRequest.headers.ToString();
+            string content = "Request for httpS://" + SecureEndpointHostname + ":" +
+           SecureEndpointPort.ToString() + " received. Your request was:<br /><plaintext>" +
+           oS.oRequest.headers;
             oS.utilSetResponseBody(BootstrapUtility.BuildBootstrapPage("Request Difference", content));
         }
 
@@ -290,9 +225,9 @@ namespace FiddlerTestRunnerConsole
             oS.oResponse["Content-Type"] = "text/html; charset=UTF-8";
             oS.oResponse["Cache-Control"] = "private, max-age=0";
 
-            string content = "Request for httpS://" + sSecureEndpointHostname + ":" +
-            iSecureEndpointPort.ToString() + " received. Your request was:<br /><plaintext>" +
-            oS.oRequest.headers.ToString();
+            string content = "Request for httpS://" + SecureEndpointHostname + ":" +
+            SecureEndpointPort.ToString() + " received. Your request was:<br /><plaintext>" +
+            oS.oRequest.headers;
             oS.utilSetResponseBody(BootstrapUtility.BuildBootstrapPage("Session Index", content));
         }
 
@@ -325,7 +260,7 @@ namespace FiddlerTestRunnerConsole
             return outS;
         }
 
-        private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
+        private static void ConsoleCancelKeyPress(object sender, ConsoleCancelEventArgs e)
         {
             DoQuit();
         }
@@ -335,7 +270,7 @@ namespace FiddlerTestRunnerConsole
             _needMoreInput = false;
             Log.Info("DoQuit Called...");
             if (null != _oSecureEndpoint) _oSecureEndpoint.Dispose();
-            Fiddler.FiddlerApplication.Shutdown();
+            FiddlerApplication.Shutdown();
             Thread.Sleep(500);
             Log.Info("Quit Completed.");
         }
@@ -348,7 +283,7 @@ namespace FiddlerTestRunnerConsole
             var inputCount = 0;
             do
             {
-                Console.WriteLine("\nEnter a command [G=Collect Garbage;\n\tR=Toggle Recording; Q=Quit]:");
+                Console.WriteLine("\nEnter a command [G=Clear Group; S=Clear Session;\n\tR=Toggle Recording; Q=Quit]:");
                 Console.Write(">");
                 ConsoleKeyInfo cki = Console.ReadKey();
                 Console.WriteLine();
@@ -356,10 +291,10 @@ namespace FiddlerTestRunnerConsole
 
                 switch (cki.KeyChar)
                 {
-                    case 'g':
-                        GarbageCollection();
-                        inputCount = 0;
-                        break;
+                    //case 'g':
+                    //    GarbageCollection();
+                    //    inputCount = 0;
+                    //    break;
 
                     case 'q':
                         inputCount = inputCleanupThreshold + 1;
@@ -369,25 +304,24 @@ namespace FiddlerTestRunnerConsole
                     case 'r':
                         _record = !_record;
 
-                        if (_record)
-                            Log.Info("Recording.");
-                        else
-                        {
-                            Log.Info("NOT Recording");
-                        }
+                        Log.Info(_record ? "Recording." : "NOT Recording");
                         break;
 
                     // Forgetful streaming
                     case 's':
-                        bool bForgetful = !FiddlerApplication.Prefs.GetBoolPref("fiddler.network.streaming.ForgetStreamedData", false);
-                        FiddlerApplication.Prefs.SetBoolPref("fiddler.network.streaming.ForgetStreamedData", bForgetful);
-                        Console.WriteLine(bForgetful ? "FiddlerCore will immediately dump streaming response data." : "FiddlerCore will keep a copy of streamed response data.");
+                        Log.Info("Cleared Session Sequence");
+                        _sessionGroupSequence = SessionGroupSequence.Empty;
+                        break;
+                    case 'g':
+                        Log.Info("Cleared Session Group");
+                        _sessionGroup = SessionGroup.Empty;
                         break;
 
                 }
                 if (++inputCount > inputCleanupThreshold)
                 {
-                    Log.Info(m => m("input count '{0}' > InputCleanupThreshold '{1}'", inputCount, inputCleanupThreshold));
+                    var count = inputCount;
+                    Log.Info(m => m("input count '{0}' > InputCleanupThreshold '{1}'", count, inputCleanupThreshold));
                     GarbageCollection();
                     inputCount = 0;
                 }
@@ -404,6 +338,19 @@ namespace FiddlerTestRunnerConsole
             Console.WriteLine("GC Done.\nWorking Set:\t" + Environment.WorkingSet.ToString("n0"));
         }
         #endregion
+    }
+
+    internal class SessionGroup : Entity
+    {
+        public static SessionGroup Empty { get { return new SessionGroup(); } }
+    }
+
+    internal class SessionGroupSequence : Entity
+    {
+        public static SessionGroupSequence Empty
+        {
+            get { return new SessionGroupSequence(); }
+        }
     }
 
     static class BootstrapUtility
