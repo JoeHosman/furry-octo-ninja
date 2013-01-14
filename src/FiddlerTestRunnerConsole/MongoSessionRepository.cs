@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Text;
 using Common.Logging;
 using Fiddler;
 using MongoDB.Bson;
@@ -117,43 +116,6 @@ namespace FiddlerTestRunnerConsole
             var loadResult = FiddlerImportExporter.ReadSessionArchive(tmpPath, out oSessions);
 
             return oSessions;
-        }
-
-        private static Session[] GetSessionsFromRawDataString(string data)
-        {
-            var outSessions = new List<Session>();
-
-            using (var ms = new MemoryStream())
-            using (var sw = new StreamWriter(ms))
-            {
-                sw.Write(data);
-
-                ms.Position = 0;
-                var sessions = FiddlerImportExporter.ReadSessionArchive(ms);
-
-                outSessions.AddRange(sessions);
-                sw.Close();
-            }
-
-            return outSessions.ToArray();
-        }
-
-        private static string GetSessionRawDataString(Session oSession)
-        {
-            string data;
-            using (var ms = new MemoryStream())
-            {
-                var saveResult = FiddlerImportExporter.WriteSessionArchive(ms, new[] { oSession });
-                Log.Debug(m => m("WriteSessionResult: {0} '{1}'", saveResult, "memory stream"));
-
-                ms.Position = 0;
-
-                using (var sr = new StreamReader(ms))
-                {
-                    data = sr.ReadToEnd();
-                }
-            }
-            return data;
         }
     }
 }

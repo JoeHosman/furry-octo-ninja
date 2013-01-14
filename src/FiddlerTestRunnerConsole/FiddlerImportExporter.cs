@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Common.Logging;
 using Fiddler;
 using Ionic.Zip;
@@ -26,52 +24,45 @@ namespace FiddlerTestRunnerConsole
                 Log.Fatal(m => m("Does not exist '{0}'", filePath));
             }
             var outSessions = new List<Session>();
-            using (ZipFile oZipFile = new ZipFile(filePath, SuggestedEncoding))
+            using (var oZipFile = new ZipFile(filePath, SuggestedEncoding))
             {
-                try
+                foreach (ZipEntry oZipEntry in oZipFile)
                 {
-                    foreach (ZipEntry oZipEntry in oZipFile)
+                    if (!oZipEntry.FileName.EndsWith(RequestFileNameEnd))
                     {
-                        if (!oZipEntry.FileName.EndsWith(RequestFileNameEnd))
-                        {
-                            Log.Info(m => m("Does not end with '{0}' '{1}'", RequestFileNameEnd, oZipEntry.FileName));
-                            continue;
-                        }
-
-                        ZipEntry requestEntity = oZipEntry;
-
-                        var responseFileName = requestEntity.FileName.Replace(RequestFileNameEnd, ResponseFileNameEnd);
-                        ZipEntry responseEntry = oZipFile[responseFileName];
-
-                        var metaFileName = requestEntity.FileName.Replace(RequestFileNameEnd, MetaFileNameEnd);
-                        ZipEntry metaEntry = oZipFile[metaFileName];
-
-                        if (null == responseEntry)
-                        {
-                            Log.Warn(m => m("Could not find server response '{0}'", responseFileName));
-                            continue;
-                        }
-
-                        var requestBytes = ReadSessionBytesFromFiddlerStream(requestEntity);
-                        var responseBytes = ReadSessionBytesFromFiddlerStream(responseEntry);
-
-                        var recreatedSession = new Session(requestBytes, responseBytes);
-
-                        if (null != metaEntry)
-                        {
-                            Log.Info(m => m("Loading metadata '{0}'", metaEntry.FileName));
-                            recreatedSession.LoadMetadata(metaEntry.OpenReader());
-                        }
-
-                        recreatedSession.oFlags["x-LoadedFrom"] = responseFileName;
-                        outSessions.Add(recreatedSession);
-
+                        ZipEntry entry = oZipEntry;
+                        Log.Info(m => m("Does not end with '{0}' '{1}'", RequestFileNameEnd, entry.FileName));
+                        continue;
                     }
-                }
-                catch (Exception)
-                {
 
-                    throw;
+                    ZipEntry requestEntity = oZipEntry;
+
+                    var responseFileName = requestEntity.FileName.Replace(RequestFileNameEnd, ResponseFileNameEnd);
+                    ZipEntry responseEntry = oZipFile[responseFileName];
+
+                    var metaFileName = requestEntity.FileName.Replace(RequestFileNameEnd, MetaFileNameEnd);
+                    ZipEntry metaEntry = oZipFile[metaFileName];
+
+                    if (null == responseEntry)
+                    {
+                        Log.Warn(m => m("Could not find server response '{0}'", responseFileName));
+                        continue;
+                    }
+
+                    var requestBytes = ReadSessionBytesFromFiddlerStream(requestEntity);
+                    var responseBytes = ReadSessionBytesFromFiddlerStream(responseEntry);
+
+                    var recreatedSession = new Session(requestBytes, responseBytes);
+
+                    if (null != metaEntry)
+                    {
+                        Log.Info(m => m("Loading metadata '{0}'", metaEntry.FileName));
+                        recreatedSession.LoadMetadata(metaEntry.OpenReader());
+                    }
+
+                    recreatedSession.oFlags["x-LoadedFrom"] = responseFileName;
+                    outSessions.Add(recreatedSession);
+
                 }
             }
             oSessions = outSessions.ToArray();
@@ -83,50 +74,43 @@ namespace FiddlerTestRunnerConsole
             var outSessions = new List<Session>();
             using (ZipFile oZipFile = ZipFile.Read(stream, new ReadOptions { Encoding = SuggestedEncoding }))
             {
-                try
+                foreach (ZipEntry oZipEntry in oZipFile)
                 {
-                    foreach (ZipEntry oZipEntry in oZipFile)
+                    if (!oZipEntry.FileName.EndsWith(RequestFileNameEnd))
                     {
-                        if (!oZipEntry.FileName.EndsWith(RequestFileNameEnd))
-                        {
-                            Log.Debug(m => m("Does not end with '{0}' '{1}'", RequestFileNameEnd, oZipEntry.FileName));
-                            continue;
-                        }
-
-                        ZipEntry requestEntity = oZipEntry;
-
-                        var responseFileName = requestEntity.FileName.Replace(RequestFileNameEnd, ResponseFileNameEnd);
-                        ZipEntry responseEntry = oZipFile[responseFileName];
-
-                        var metaFileName = requestEntity.FileName.Replace(RequestFileNameEnd, MetaFileNameEnd);
-                        ZipEntry metaEntry = oZipFile[metaFileName];
-
-                        if (null == responseEntry)
-                        {
-                            Log.Warn(m => m("Could not find server response '{0}'", responseFileName));
-                            continue;
-                        }
-
-                        var requestBytes = ReadSessionBytesFromFiddlerStream(requestEntity);
-                        var responseBytes = ReadSessionBytesFromFiddlerStream(responseEntry);
-
-                        var recreatedSession = new Session(requestBytes, responseBytes);
-
-                        if (null != metaEntry)
-                        {
-                            Log.Debug(m => m("Loading metadata '{0}'", metaEntry.FileName));
-                            recreatedSession.LoadMetadata(metaEntry.OpenReader());
-                        }
-
-                        recreatedSession.oFlags["x-LoadedFrom"] = responseFileName;
-                        outSessions.Add(recreatedSession);
-
+                        ZipEntry entry = oZipEntry;
+                        Log.Debug(m => m("Does not end with '{0}' '{1}'", RequestFileNameEnd, entry.FileName));
+                        continue;
                     }
-                }
-                catch (Exception)
-                {
 
-                    throw;
+                    ZipEntry requestEntity = oZipEntry;
+
+                    var responseFileName = requestEntity.FileName.Replace(RequestFileNameEnd, ResponseFileNameEnd);
+                    ZipEntry responseEntry = oZipFile[responseFileName];
+
+                    var metaFileName = requestEntity.FileName.Replace(RequestFileNameEnd, MetaFileNameEnd);
+                    ZipEntry metaEntry = oZipFile[metaFileName];
+
+                    if (null == responseEntry)
+                    {
+                        Log.Warn(m => m("Could not find server response '{0}'", responseFileName));
+                        continue;
+                    }
+
+                    var requestBytes = ReadSessionBytesFromFiddlerStream(requestEntity);
+                    var responseBytes = ReadSessionBytesFromFiddlerStream(responseEntry);
+
+                    var recreatedSession = new Session(requestBytes, responseBytes);
+
+                    if (null != metaEntry)
+                    {
+                        Log.Debug(m => m("Loading metadata '{0}'", metaEntry.FileName));
+                        recreatedSession.LoadMetadata(metaEntry.OpenReader());
+                    }
+
+                    recreatedSession.oFlags["x-LoadedFrom"] = responseFileName;
+                    outSessions.Add(recreatedSession);
+
                 }
             }
             return outSessions.ToArray();
@@ -134,33 +118,23 @@ namespace FiddlerTestRunnerConsole
 
         private static byte[] ReadSessionBytesFromFiddlerStream(ZipEntry requestEntity)
         {
-            byte[] requestBytes = new byte[requestEntity.UncompressedSize];
+            var requestBytes = new byte[requestEntity.UncompressedSize];
 
-            try
+            using (Stream fs = requestEntity.OpenReader())
             {
-                using (Stream fs = requestEntity.OpenReader())
-                {
-                    var iRead = Utilities.ReadEntireStream(fs, requestBytes);
-                    Log.Debug(m => m("File outStream read with {0} result. '{1}'", iRead, requestEntity.FileName));
-                    fs.Close();
-                }
-            }
-            catch (BadPasswordException badPasswordException)
-            {
+                var iRead = Utilities.ReadEntireStream(fs, requestBytes);
+                Log.Debug(m => m("File outStream read with {0} result. '{1}'", iRead, requestEntity.FileName));
+                fs.Close();
             }
             return requestBytes;
         }
 
+
         public static bool WriteSessionArchive(string filePath, Session[] arrSessions)
         {
-            Log.Debug(m => m("Writing [{1}] Sessions to {0}  No Password", filePath, arrSessions.Count()));
-            return WriteSessionArchive(filePath, arrSessions, string.Empty);
-        }
-        public static bool WriteSessionArchive(string filePath, Session[] arrSessions, string password)
-        {
-            var filename = System.IO.Path.GetFileNameWithoutExtension(filePath);
+            var filename = Path.GetFileNameWithoutExtension(filePath);
 
-            Log.Debug(m => m("Writing Filename:{0}  password Length:'{2}', full-path:'{1}'", filename, filePath, password.Length));
+            Log.Debug(m => m("Writing Filename:{0}  full-path:'{1}'", filename, filePath));
 
             if (null == arrSessions)
             {
@@ -176,10 +150,10 @@ namespace FiddlerTestRunnerConsole
 
             try
             {
-                if (System.IO.File.Exists(filePath))
+                if (File.Exists(filePath))
                 {
                     Log.Warn(m => m("File already exists; Deleteing '{0}'", filePath));
-                    System.IO.File.Delete(filePath);
+                    File.Delete(filePath);
                 }
 
                 Log.Debug(m => m("Creating ZipFile '{0}' with encoding '{1}'", filePath, SuggestedEncoding.EncodingName));
@@ -195,8 +169,6 @@ namespace FiddlerTestRunnerConsole
                 Log.Warn("WriteSessionZip Exception", ex);
                 throw;
             }
-
-            return false;
         }
         public static bool WriteSessionArchive(Stream outStream, Session[] arrSessions)
         {
@@ -213,9 +185,11 @@ namespace FiddlerTestRunnerConsole
                 return false;
             }
 
-            var oZip = new ZipFile(SuggestedEncoding);
-            oZip.CompressionLevel = CompressionLevel.BestCompression;
-            oZip.CompressionMethod = CompressionMethod.BZip2;
+            var oZip = new ZipFile(SuggestedEncoding)
+                {
+                    CompressionLevel = CompressionLevel.BestCompression,
+                    CompressionMethod = CompressionMethod.BZip2
+                };
             //Log.Info(m => m("Zipfile '{0}' CompressionLvl:'{1}' Method:'{2}'", filename, oZip.CompressionLevel, oZip.CompressionMethod));
 
             const string rawDirectoryName = "raw" + @"\";
@@ -245,24 +219,13 @@ namespace FiddlerTestRunnerConsole
                 string responseFileName = string.Format("{0}_{1}", sessionFileBase, ResponseFileNameEnd);
                 string metaFileName = string.Format("{0}_{1}", sessionFileBase, MetaFileNameEnd);
 
-                oZip.AddEntry(requestFileName, new WriteDelegate(delegate(string sn, Stream writeStream)
-                {
-                    //Log.Info(m => m("Request ToStream '{0}' '{1}'", filename, requestFileName));
-                    copyOfSession.WriteRequestToStream(false, true, writeStream);
-                }));
+                oZip.AddEntry(requestFileName, (sn, writeStream) =>
+                                               copyOfSession.WriteRequestToStream(false, true, writeStream));
 
-                oZip.AddEntry(responseFileName, new WriteDelegate(delegate(string sn, Stream writeStream)
-                {
-                    //Log.Info(m => m("Response ToStream '{0}' '{1}'", filename, responseFileName));
-                    copyOfSession.WriteResponseToStream(writeStream, false);
-                }));
+                oZip.AddEntry(responseFileName, (sn, writeStream) =>
+                                                copyOfSession.WriteResponseToStream(writeStream, false));
 
-                oZip.AddEntry(metaFileName, new WriteDelegate(delegate(string sn, Stream writeStream)
-                {
-                    //Log.Info(m => m("Meta ToStream '{0}' '{1}'", filename, metaFileName));
-                    copyOfSession.WriteMetadataToStream(writeStream);
-                }
-                    ));
+                oZip.AddEntry(metaFileName, (sn, writeStream) => copyOfSession.WriteMetadataToStream(writeStream));
                 fileNumber++;
             }
 
@@ -275,7 +238,7 @@ namespace FiddlerTestRunnerConsole
         private static string BuildFiddlerZipFileComment(bool hasPassword)
         {
             const string fiddlerLink = "http://www.fiddler2.com";
-            return string.Format("Fiddler{0} {1} Session Archive.  See {2}. This Archive {3} using a password.", Fiddler.CONFIG.FiddlerVersionInfo, GetZipLibraryInfo(),
+            return string.Format("Fiddler{0} {1} Session Archive.  See {2}. This Archive {3} using a password.", CONFIG.FiddlerVersionInfo, GetZipLibraryInfo(),
                 fiddlerLink, (hasPassword) ? "IS" : "IS NOT");
         }
 

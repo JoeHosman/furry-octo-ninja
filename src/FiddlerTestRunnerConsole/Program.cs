@@ -16,7 +16,7 @@ namespace FiddlerTestRunnerConsole
         private static bool _record;
         private static ISessionRepository _sessionRepo;
         private static SessionGroupSequence _sessionGroupSequence = SessionGroupSequence.Empty;
-        private static SessionGroup _sessionGroup = SessionGroup;
+        private static SessionGroup _sessionGroup = SessionGroup.Empty;
 
         static void Main(string[] args)
         {
@@ -45,7 +45,7 @@ namespace FiddlerTestRunnerConsole
             // For the purposes of this demo, we'll forbid connections to HTTPS 
             // sites that use invalid certificates. Change this from the default only
             // if you know EXACTLY what that implies.
-            Fiddler.CONFIG.IgnoreServerCertErrors = false;
+            CONFIG.IgnoreServerCertErrors = false;
 
             // ... but you can allow a specific (even invalid) certificate by implementing and assigning a callback...
             // FiddlerApplication.OnValidateServerCertificate += new System.EventHandler<ValidateServerCertificateEventArgs>(CheckCert);
@@ -54,15 +54,15 @@ namespace FiddlerTestRunnerConsole
 
             // For forward-compatibility with updated FiddlerCore libraries, it is strongly recommended that you 
             // start with the DEFAULT options and manually disable specific unwanted options.
-            FiddlerCoreStartupFlags oFCSF = FiddlerCoreStartupFlags.Default;
+            var fiddlerCoreStartupFlags = FiddlerCoreStartupFlags.Default;
 
             // E.g. If you want to add a flag, start with the Defaults and "or" it in:
             // oFCSF = (oFCSF | FiddlerCoreStartupFlags.CaptureFTP);
-            oFCSF = (oFCSF | FiddlerCoreStartupFlags.DecryptSSL);
+            fiddlerCoreStartupFlags = (fiddlerCoreStartupFlags | FiddlerCoreStartupFlags.DecryptSSL);
 
             // ... or if you don't want a flag in the defaults, "and not" it out:
             // Uncomment the next line if you don't want FiddlerCore to act as the system proxy
-            oFCSF = (oFCSF & ~FiddlerCoreStartupFlags.RegisterAsSystemProxy);
+            fiddlerCoreStartupFlags = (fiddlerCoreStartupFlags & ~FiddlerCoreStartupFlags.RegisterAsSystemProxy);
             // or uncomment the next line if you don't want to decrypt SSL traffic.
             // oFCSF = (oFCSF & ~FiddlerCoreStartupFlags.DecryptSSL);
             //
@@ -71,9 +71,9 @@ namespace FiddlerTestRunnerConsole
             #endregion
 
             // NOTE: In the next line, you can pass 0 for the port (instead of 8877) to have FiddlerCore auto-select an available port
-            Fiddler.FiddlerApplication.Startup(8877, oFCSF);
+            FiddlerApplication.Startup(8877, fiddlerCoreStartupFlags);
 
-            FiddlerApplication.Log.LogFormat("Starting with settings: [{0}]", oFCSF);
+            FiddlerApplication.Log.LogFormat("Starting with settings: [{0}]", fiddlerCoreStartupFlags);
             FiddlerApplication.Log.LogFormat("Using Gateway: {0}", (CONFIG.bForwardToGateway) ? "TRUE" : "FALSE");
 
             Console.WriteLine("Hit CTRL+C to end session.");
@@ -181,17 +181,17 @@ namespace FiddlerTestRunnerConsole
             }
         }
 
-        private static void OnLogString(object sender, LogEventArgs oLEA)
+        private static void OnLogString(object sender, LogEventArgs logEventArgs)
         {
-            Log.Debug(m => m("LogString: {0}", oLEA.LogString));
-            //Console.WriteLine("** LogString: " + oLEA.LogString);
+            Log.Debug(m => m("LogString: {0}", logEventArgs.LogString));
+            //Console.WriteLine("** LogString: " + logEventArgs.LogString);
         }
 
-        private static void OnNotification(object sender, NotificationEventArgs oNEA)
+        private static void OnNotification(object sender, NotificationEventArgs notificationEventArgs)
         {
-            Log.Warn(m => m("NotifyUser: {0}", oNEA.NotifyString));
+            Log.Warn(m => m("NotifyUser: {0}", notificationEventArgs.NotifyString));
 
-            //Console.WriteLine("** NotifyUser: " + oNEA.NotifyString);
+            //Console.WriteLine("** NotifyUser: " + notificationEventArgs.NotifyString);
         }
 
         private static void SetSessionAsRequestDifferenceReport(string id, Session oS)
@@ -214,21 +214,8 @@ namespace FiddlerTestRunnerConsole
             oS.oResponse["Content-Type"] = "text/html; charset=UTF-8";
             oS.oResponse["Cache-Control"] = "private, max-age=0";
 
-            string content = "<p class=\"text-info\">Hello World</p>";
+            const string content = "<p class=\"text-info\">Hello World</p>";
             oS.utilSetResponseBody(BootstrapUtility.BuildBootstrapPage("Help", content));
-        }
-
-        private static void SetSessionAsSessionIndexPage(Session oS)
-        {
-            oS.utilCreateResponseAndBypassServer();
-            oS.oResponse.headers.HTTPResponseStatus = "200 Ok";
-            oS.oResponse["Content-Type"] = "text/html; charset=UTF-8";
-            oS.oResponse["Cache-Control"] = "private, max-age=0";
-
-            string content = "Request for httpS://" + SecureEndpointHostname + ":" +
-            SecureEndpointPort.ToString() + " received. Your request was:<br /><plaintext>" +
-            oS.oRequest.headers;
-            oS.utilSetResponseBody(BootstrapUtility.BuildBootstrapPage("Session Index", content));
         }
 
         private static void SetSessionAsResponseReplay(string id, Session oS)
