@@ -5,6 +5,7 @@ using Common.Logging;
 using Fiddler;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Star.FiddlerRunner.Common;
 
 namespace FiddlerTestRunnerConsole
 {
@@ -26,11 +27,11 @@ namespace FiddlerTestRunnerConsole
 
             //data = Utility.Zip(data);
 
-            var persistentSession = new PersistentFiddlerSession(oSession)
-            {
-                Data = data,
-                Len = orignalLength // so we know how long it should be
-            };
+            var persistentSession = new PersistentFiddlerSession
+                {
+                    Data = data,
+                    Len = orignalLength // so we know how long it should be
+                };
 
             var repo = new MongoRepository.MongoRepository<PersistentFiddlerSession>();
 
@@ -55,8 +56,6 @@ namespace FiddlerTestRunnerConsole
 
                 return gridfsInfo;
             }
-
-
         }
 
         private static string GenerateTmpSAZPath()
@@ -75,13 +74,6 @@ namespace FiddlerTestRunnerConsole
             {
                 throw new KeyNotFoundException(string.Format("Could not find a session id '{0}'", id));
             }
-
-            // checked if actual data is compressed vs expected length
-            //if (resultSession.Len > resultSession.Data.Length)
-            //{
-            //    var uncompressed = Utility.UnZip(resultSession.Data);
-            //    resultSession.Data = uncompressed;
-            //}
 
             var gridFsId = new ObjectId(resultSession.Data);
 

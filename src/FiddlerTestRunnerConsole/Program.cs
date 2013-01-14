@@ -2,7 +2,7 @@
 using System.Threading;
 using Common.Logging;
 using Fiddler;
-using MongoRepository;
+using Star.FiddlerRunner.Common;
 
 namespace FiddlerTestRunnerConsole
 {
@@ -204,7 +204,7 @@ namespace FiddlerTestRunnerConsole
             string content = "Request for httpS://" + SecureEndpointHostname + ":" +
            SecureEndpointPort.ToString() + " received. Your request was:<br /><plaintext>" +
            oS.oRequest.headers;
-            oS.utilSetResponseBody(BootstrapUtility.BuildBootstrapPage("Request Difference", content));
+            oS.utilSetResponseBody(content);
         }
 
         private static void SetSessionAsHelpPage(Session oS)
@@ -215,7 +215,7 @@ namespace FiddlerTestRunnerConsole
             oS.oResponse["Cache-Control"] = "private, max-age=0";
 
             const string content = "<p class=\"text-info\">Hello World</p>";
-            oS.utilSetResponseBody(BootstrapUtility.BuildBootstrapPage("Help", content));
+            oS.utilSetResponseBody(content);
         }
 
         private static void SetSessionAsResponseReplay(string id, Session oS)
@@ -325,40 +325,5 @@ namespace FiddlerTestRunnerConsole
             Console.WriteLine("GC Done.\nWorking Set:\t" + Environment.WorkingSet.ToString("n0"));
         }
         #endregion
-    }
-
-    internal class SessionGroup : Entity
-    {
-        public static SessionGroup Empty { get { return new SessionGroup(); } }
-    }
-
-    internal class SessionGroupSequence : Entity
-    {
-        public static SessionGroupSequence Empty
-        {
-            get { return new SessionGroupSequence(); }
-        }
-    }
-
-    static class BootstrapUtility
-    {
-        public static string BuildBootstrapPage(string title, string content)
-        {
-            string html = "    <!DOCTYPE html>" +
-       " <html>" +
-        "<head>" +
-        "<title>" + title + "</title>" +
-        "<!-- Bootstrap -->" +
-        "<link href=\"http://twitter.github.com/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\" media=\"screen\">" +
-        "</head>" +
-        "<body>" +
-        content +
-        "<script src=\"http://code.jquery.com/jquery-latest.js\"></script>" +
-        "<script src=\"http://twitter.github.com/bootstrap/js/bootstrap.min.js\"></script>" +
-        "</body>" +
-                "</html>";
-
-            return html;
-        }
     }
 }

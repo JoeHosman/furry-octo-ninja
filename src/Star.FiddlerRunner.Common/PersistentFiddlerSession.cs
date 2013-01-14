@@ -3,23 +3,21 @@ using Fiddler;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoRepository;
 
-namespace FiddlerTestRunnerConsole
+namespace Star.FiddlerRunner.Common
 {
     [CollectionName("PersistentFiddlerSessions")]
-    internal class PersistentFiddlerSession : Entity
+    public class PersistentFiddlerSession : Entity
     {
         [BsonIgnore]
         public Session OSession { get; private set; }
 
+        public Entity SessionGroupId { get; set; }
+        public Entity SessionGroupSequenceId { get; set; }
+
         public PersistentFiddlerSession()
         {
-
-        }
-
-        public PersistentFiddlerSession(Session oSession)
-        {
-            OSession = oSession;
-            Url = oSession.url;
+            SessionGroupId = SessionGroup.Empty;
+            SessionGroupSequenceId = SessionGroupSequence.Empty;
         }
 
         public string Url { get; set; }

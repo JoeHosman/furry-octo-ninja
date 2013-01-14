@@ -7,7 +7,7 @@ using Fiddler;
 using Ionic.Zip;
 using Ionic.Zlib;
 
-namespace FiddlerTestRunnerConsole
+namespace Star.FiddlerRunner.Common
 {
     public class FiddlerImportExporter
     {

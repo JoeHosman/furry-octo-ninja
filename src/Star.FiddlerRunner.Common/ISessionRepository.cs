@@ -1,8 +1,8 @@
 ﻿using Fiddler;
 
-namespace FiddlerTestRunnerConsole
+namespace Star.FiddlerRunner.Common
 {
-    internal interface ISessionRepository
+    public interface ISessionRepository
     {
         PersistentFiddlerSession SaveSession(Session oSession);
         PersistentFiddlerSession GetSessionWithId(string id);
