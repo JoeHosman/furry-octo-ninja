@@ -108,18 +108,20 @@ namespace FiddlerTestRunnerConsole
                 return;
             }
 
-            if (SessionGroupSequence.Empty == _sessionGroupSequence)
+            if (SessionGroupSequence.Empty.Equals(_sessionGroupSequence))
             {
-                Log.Info("Empty group sequence; creating new one.");
+                Log.Debug("Empty group sequence; creating new one.");
+                _sessionGroupSequence = _sessionRepo.CreateNewSessionGroupSequence();
             }
 
-            if (SessionGroup.Empty == _sessionGroup)
+            if (SessionGroup.Empty.Equals(_sessionGroup))
             {
-                Log.Info("Empty group; creating new one.");
+                Log.Debug("Empty group; creating new one.");
+                _sessionGroup = _sessionRepo.CreateNewSessionGroup(_sessionGroupSequence);
             }
 
             Log.Info(m => m("Saving Session: {0}", Elispie(oS.url, 50)));
-            _sessionRepo.SaveSession(oS);
+            _sessionRepo.SaveSession(oS, _sessionGroup);
         }
 
         private static void OnRequest(Session oS)
@@ -237,7 +239,8 @@ namespace FiddlerTestRunnerConsole
 
         public static string Elispie(string s, int limit)
         {
-            if (s.Length < limit)
+
+            if (string.IsNullOrEmpty(s) || s.Length < limit)
             {
                 return s;
             }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using Common.Logging;
@@ -19,7 +20,40 @@ namespace FiddlerTestRunnerConsole
             MongoClient = new MongoClient(ConfigurationManager.ConnectionStrings["MongoServerSettings"].ConnectionString);
         }
 
-        public PersistentFiddlerSession SaveSession(Session oSession)
+        public SessionGroupSequence CreateNewSessionGroupSequence()
+        {
+            var sessionGroupSequence = new SessionGroupSequence();
+
+            var repo = new MongoRepository.MongoRepository<SessionGroupSequence>();
+
+            repo.Add(sessionGroupSequence);
+
+            Log.Info(m => m("New SessionGroupSequence created: '{0}'", sessionGroupSequence.Id));
+
+            return sessionGroupSequence;
+        }
+
+        public SessionGroup CreateNewSessionGroup(SessionGroupSequence sessionGroupSequence)
+        {
+            if (SessionGroupSequence.Empty.Equals(sessionGroupSequence))
+            {
+                Log.Fatal("Cannot create a SessionGroup with an Empty SessionGroupSequence.");
+                throw new ArgumentNullException("sessionGroupSequence cannot be empty!");
+            }
+
+            var sessionGroup = new SessionGroup { SessionGroupSequence = sessionGroupSequence };
+
+            var repo = new MongoRepository.MongoRepository<SessionGroup>();
+
+            repo.Add(sessionGroup);
+
+            Log.Info(m => m("New SessionGroup created: '{0}' for sequence: '{1}'", sessionGroup.Id, sessionGroupSequence.Id));
+
+            return sessionGroup;
+
+        }
+
+        public PersistentFiddlerSession SaveSession(Session oSession, SessionGroup sessionGroup)
         {
             var gridfsFileInfo = SaveSessionAsGridFS(oSession);
             var data = gridfsFileInfo.Id.ToString();
@@ -30,7 +64,8 @@ namespace FiddlerTestRunnerConsole
             var persistentSession = new PersistentFiddlerSession
                 {
                     Data = data,
-                    Len = orignalLength // so we know how long it should be
+                    Len = orignalLength, // so we know how long it should be
+                    Url = oSession.fullUrl
                 };
 
             var repo = new MongoRepository.MongoRepository<PersistentFiddlerSession>();

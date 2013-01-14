@@ -4,7 +4,10 @@ namespace Star.FiddlerRunner.Common
 {
     public interface ISessionRepository
     {
-        PersistentFiddlerSession SaveSession(Session oSession);
+        SessionGroupSequence CreateNewSessionGroupSequence();
+        SessionGroup CreateNewSessionGroup(SessionGroupSequence sessionGroupSequence);
+
+        PersistentFiddlerSession SaveSession(Session oSession, SessionGroup sessionGroup);
         PersistentFiddlerSession GetSessionWithId(string id);
     }
 }
