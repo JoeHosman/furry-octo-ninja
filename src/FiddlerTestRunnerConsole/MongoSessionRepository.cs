@@ -41,7 +41,7 @@ namespace FiddlerTestRunnerConsole
                 throw new ArgumentNullException("sessionGroupSequence cannot be empty!");
             }
 
-            var sessionGroup = new SessionGroup { SessionGroupSequence = sessionGroupSequence };
+            var sessionGroup = new SessionGroup { SessionGroupSequence = sessionGroupSequence.Id };
 
             var repo = new MongoRepository.MongoRepository<SessionGroup>();
 
@@ -65,7 +65,9 @@ namespace FiddlerTestRunnerConsole
                 {
                     Data = data,
                     Len = orignalLength, // so we know how long it should be
-                    Url = oSession.fullUrl
+                    Url = oSession.fullUrl,
+                    SessionGroupId = sessionGroup.Id,
+                    SessionGroupSequenceId = sessionGroup.SessionGroupSequence
                 };
 
             var repo = new MongoRepository.MongoRepository<PersistentFiddlerSession>();

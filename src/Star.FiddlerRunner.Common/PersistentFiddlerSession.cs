@@ -1,5 +1,6 @@
 ﻿using System;
 using Fiddler;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoRepository;
 
@@ -11,13 +12,13 @@ namespace Star.FiddlerRunner.Common
         [BsonIgnore]
         public Session OSession { get; private set; }
 
-        public Entity SessionGroupId { get; set; }
-        public Entity SessionGroupSequenceId { get; set; }
+        public string SessionGroupId { get; set; }
+        public string SessionGroupSequenceId { get; set; }
 
         public PersistentFiddlerSession()
         {
-            SessionGroupId = SessionGroup.Empty;
-            SessionGroupSequenceId = SessionGroupSequence.Empty;
+            SessionGroupId = SessionGroup.Empty.Id;
+            SessionGroupSequenceId = SessionGroupSequence.Empty.Id;
         }
 
         public string Url { get; set; }

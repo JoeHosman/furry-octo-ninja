@@ -1,4 +1,5 @@
 ﻿using Common.Logging;
+using MongoDB.Bson;
 using MongoRepository;
 
 namespace Star.FiddlerRunner.Common
@@ -16,16 +17,16 @@ namespace Star.FiddlerRunner.Common
 
         public override int GetHashCode()
         {
-            return (SessionGroupSequence != null ? SessionGroupSequence.GetHashCode() : 0);
+            return (SessionGroupSequence.GetHashCode());
         }
 
         public static SessionGroup Empty { get { return new SessionGroup(); } }
 
-        public Entity SessionGroupSequence { get; set; }
+        public string SessionGroupSequence { get; set; }
 
         public SessionGroup()
         {
-            SessionGroupSequence = Common.SessionGroupSequence.Empty;
+            SessionGroupSequence = Common.SessionGroupSequence.Empty.Id;
         }
 
         public override bool Equals(object obj)
