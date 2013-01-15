@@ -17,7 +17,7 @@ namespace FiddlerTestRunnerConsole
         private static ISessionRepository _sessionRepo;
         private static SessionGroupSequence _sessionGroupSequence = SessionGroupSequence.Empty;
         private static SessionGroup _sessionGroup = SessionGroup.Empty;
-
+        
         static void Main(string[] args)
         {
             Log.Debug("Main called...");
@@ -120,7 +120,7 @@ namespace FiddlerTestRunnerConsole
                 _sessionGroup = _sessionRepo.CreateNewSessionGroup(_sessionGroupSequence);
             }
 
-            Log.Info(m => m("Saving Session: {0}", Elispie(oS.url, 50)));
+            Log.Info(m => m("Saving Session: {0}", Utility.Elispie(oS.url, 50)));
             _sessionRepo.SaveSession(oS, _sessionGroup);
         }
 
@@ -237,19 +237,6 @@ namespace FiddlerTestRunnerConsole
 
         #region boreing functions : Elispie, Quitting, Asking for Input, Garbage
 
-        public static string Elispie(string s, int limit)
-        {
-
-            if (string.IsNullOrEmpty(s) || s.Length < limit)
-            {
-                return s;
-            }
-
-            var outS = s.Substring(0, limit - 1) + "...";
-
-            return outS;
-        }
-
         private static void ConsoleCancelKeyPress(object sender, ConsoleCancelEventArgs e)
         {
             DoQuit();
@@ -312,21 +299,12 @@ namespace FiddlerTestRunnerConsole
                 {
                     var count = inputCount;
                     Log.Info(m => m("input count '{0}' > InputCleanupThreshold '{1}'", count, inputCleanupThreshold));
-                    GarbageCollection();
+                    Utility.GarbageCollection();
                     inputCount = 0;
                 }
             } while (_needMoreInput);
         }
 
-        private static void GarbageCollection()
-        {
-            Log.Info(m => m("GarbageCollection Working Set:\t{0}", Environment.WorkingSet.ToString("n0")));
-            Console.WriteLine("Working Set:\t" + Environment.WorkingSet.ToString("n0"));
-            Console.WriteLine("Begin GC...");
-            GC.Collect();
-            Log.Info(m => m("GarbageCollection Done Working Set:\t{0}", Environment.WorkingSet.ToString("n0")));
-            Console.WriteLine("GC Done.\nWorking Set:\t" + Environment.WorkingSet.ToString("n0"));
-        }
         #endregion
     }
 }

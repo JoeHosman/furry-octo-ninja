@@ -1,0 +1,14 @@
+﻿@model IReadOnlyList<Star.FiddlerRunner.Common.SessionGroupSequence>
+
+@{
+    ViewBag.Title = "Session Sequences";
+}
+
+<h2>title</h2>
+
+<ul>
+    @foreach (var seq in Model)
+    {
+        <li>@seq.Id</li>
+    }
+</ul>

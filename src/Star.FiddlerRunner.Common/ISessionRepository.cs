@@ -1,4 +1,5 @@
-﻿using Fiddler;
+﻿using System.Collections.Generic;
+using Fiddler;
 
 namespace Star.FiddlerRunner.Common
 {
@@ -9,5 +10,6 @@ namespace Star.FiddlerRunner.Common
 
         PersistentFiddlerSession SaveSession(Session oSession, SessionGroup sessionGroup);
         PersistentFiddlerSession GetSessionWithId(string id);
+        IReadOnlyList<SessionGroupSequence> GetSessionSequenceList();
     }
 }

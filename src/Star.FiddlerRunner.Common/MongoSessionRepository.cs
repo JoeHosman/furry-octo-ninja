@@ -6,11 +6,10 @@ using Common.Logging;
 using Fiddler;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Star.FiddlerRunner.Common;
 
-namespace FiddlerTestRunnerConsole
+namespace Star.FiddlerRunner.Common
 {
-    internal class MongoSessionRepository : ISessionRepository
+    public class MongoSessionRepository : ISessionRepository
     {
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
         private static readonly MongoClient MongoClient;
@@ -73,7 +72,7 @@ namespace FiddlerTestRunnerConsole
             var repo = new MongoRepository.MongoRepository<PersistentFiddlerSession>();
 
             repo.Add(persistentSession);
-            Log.Info(m => m("Saved session id: '{0}' '{1}'", persistentSession.Id, Program.Elispie(persistentSession.Url, 50)));
+            Log.Info(m => m("Saved session id: '{0}' '{1}'", persistentSession.Id, Utility.Elispie(persistentSession.Url, 50)));
             return persistentSession;
         }
 
@@ -118,6 +117,19 @@ namespace FiddlerTestRunnerConsole
 
             resultSession.SetSession(sessions[0]);
             return resultSession;
+        }
+
+        public IReadOnlyList<SessionGroupSequence> GetSessionSequenceList()
+        {
+            var repo = new MongoRepository.MongoRepository<SessionGroupSequence>();
+
+            var result = repo.All();
+
+            var list = new List<SessionGroupSequence>();
+            list.AddRange(result);
+
+
+            return list.ToArray();
         }
 
         private Session[] LoadSessionsFromGridFs(ObjectId gridFsId)
