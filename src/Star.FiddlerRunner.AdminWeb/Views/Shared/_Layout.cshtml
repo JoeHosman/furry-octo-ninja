@@ -6,20 +6,47 @@
     <title>@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-    
+
     <link href="~/Content/css/bootstrap.css" rel="stylesheet">
 
     <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
+        body
+        {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        .sidebar-nav
+        {
+            padding: 9px 0;
+        }
     </style>
 </head>
 <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="#">Fiddler Runner</a>
+                <div class="nav-collapse collapse">
+                    <p class="navbar-text pull-right">
+                        @DateTime.UtcNow
+                    </p>
+                    <ul class="nav">
+                        <li class="active">@Html.ActionLink("Home", "Index", "Home")</li>
+                        <li>@Html.ActionLink("Look @ sessions", "Index", "Session")</li>
+                        @*<li><a href="#contact">Contact</a></li>*@
+                    </ul>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </div>
+    </div>
+
     @RenderBody()
 
     @Scripts.Render("~/bundles/jquery")
