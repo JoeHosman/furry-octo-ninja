@@ -9,6 +9,6 @@
 <ul>
     @foreach (var seq in Model)
     {
-        <li>@seq.Id</li>
+        <li>@seq.Id - @Html.ActionLink("Groups", "Groups", new { id = seq.Id })</li>
     }
 </ul>

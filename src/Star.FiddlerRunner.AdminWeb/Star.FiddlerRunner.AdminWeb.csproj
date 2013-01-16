@@ -140,6 +140,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\GroupController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SequenceController.cs" />
     <Compile Include="Controllers\SessionController.cs" />
@@ -245,6 +246,8 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Session\Index.cshtml" />
     <Content Include="Views\Sequence\Index.cshtml" />
+    <Content Include="Views\Sequence\Groups.cshtml" />
+    <Content Include="Views\Group\Sessions.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

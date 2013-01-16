@@ -7,20 +7,20 @@ using Star.FiddlerRunner.Common;
 
 namespace Star.FiddlerRunner.AdminWeb.Controllers
 {
-    public class SequenceController : Controller
+    public class GroupController : Controller
     {
         readonly ISessionRepository _repo = new MongoSessionRepository();
         //
-        // GET: /Sequence/
+        // GET: /Group/
 
         public ActionResult Index()
         {
-            var list = _repo.GetSessionSequenceList();
-            return View(list);
+
+            return View();
         }
 
         //
-        // GET: /Sequence/Details/5
+        // GET: /Group/Details/5
 
         public ActionResult Details(int id)
         {
@@ -28,7 +28,7 @@ namespace Star.FiddlerRunner.AdminWeb.Controllers
         }
 
         //
-        // GET: /Sequence/Create
+        // GET: /Group/Create
 
         public ActionResult Create()
         {
@@ -36,7 +36,7 @@ namespace Star.FiddlerRunner.AdminWeb.Controllers
         }
 
         //
-        // POST: /Sequence/Create
+        // POST: /Group/Create
 
         [HttpPost]
         public ActionResult Create(FormCollection collection)
@@ -54,7 +54,7 @@ namespace Star.FiddlerRunner.AdminWeb.Controllers
         }
 
         //
-        // GET: /Sequence/Edit/5
+        // GET: /Group/Edit/5
 
         public ActionResult Edit(int id)
         {
@@ -62,7 +62,7 @@ namespace Star.FiddlerRunner.AdminWeb.Controllers
         }
 
         //
-        // POST: /Sequence/Edit/5
+        // POST: /Group/Edit/5
 
         [HttpPost]
         public ActionResult Edit(int id, FormCollection collection)
@@ -80,7 +80,7 @@ namespace Star.FiddlerRunner.AdminWeb.Controllers
         }
 
         //
-        // GET: /Sequence/Delete/5
+        // GET: /Group/Delete/5
 
         public ActionResult Delete(int id)
         {
@@ -88,7 +88,7 @@ namespace Star.FiddlerRunner.AdminWeb.Controllers
         }
 
         //
-        // POST: /Sequence/Delete/5
+        // POST: /Group/Delete/5
 
         [HttpPost]
         public ActionResult Delete(int id, FormCollection collection)
@@ -105,9 +105,10 @@ namespace Star.FiddlerRunner.AdminWeb.Controllers
             }
         }
 
-        public ActionResult Groups(string id)
+        public ActionResult Sessions(string id)
         {
-            var list = _repo.GetSessionGroupListBySequenceId(id);
+            var list = _repo.GetSessionListForGroupId(id);
+
             return View(list);
         }
     }

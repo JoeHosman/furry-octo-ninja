@@ -11,5 +11,8 @@ namespace Star.FiddlerRunner.Common
         PersistentFiddlerSession SaveSession(Session oSession, SessionGroup sessionGroup);
         PersistentFiddlerSession GetSessionWithId(string id);
         IReadOnlyList<SessionGroupSequence> GetSessionSequenceList();
+        IReadOnlyList<SessionGroup> GetSessionGroupListBySequenceId(string sequenceId);
+        IReadOnlyList<PersistentFiddlerSession> GetSessionListForSequenceId(string sequenceId);
+        IReadOnlyList<PersistentFiddlerSession> GetSessionListForGroupId(string groupId);
     }
 }

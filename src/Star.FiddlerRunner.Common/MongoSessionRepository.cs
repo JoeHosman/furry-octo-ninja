@@ -133,6 +133,45 @@ namespace Star.FiddlerRunner.Common
             return list.ToArray();
         }
 
+        public IReadOnlyList<SessionGroup> GetSessionGroupListBySequenceId(string sequenceId)
+        {
+            var repo = new MongoRepository.MongoRepository<SessionGroup>();
+
+            IMongoQuery query = Query<SessionGroup>.EQ(a => a.SessionGroupSequence, sequenceId);
+            var result = repo.Collection.Find(query).SetSortOrder(SortBy.Ascending("_id"));
+
+            var list = new List<SessionGroup>();
+            list.AddRange(result);
+
+            return list.ToArray();
+        }
+
+        public IReadOnlyList<PersistentFiddlerSession> GetSessionListForSequenceId(string sequenceId)
+        {
+            var repo = new MongoRepository.MongoRepository<PersistentFiddlerSession>();
+
+            IMongoQuery query = Query<PersistentFiddlerSession>.EQ(a => a.SessionGroupSequenceId, sequenceId);
+            var result = repo.Collection.Find(query).SetSortOrder(SortBy.Ascending("_id"));
+
+            var list = new List<PersistentFiddlerSession>();
+            list.AddRange(result);
+
+            return list.ToArray();
+        }
+
+        public IReadOnlyList<PersistentFiddlerSession> GetSessionListForGroupId(string groupId)
+        {
+            var repo = new MongoRepository.MongoRepository<PersistentFiddlerSession>();
+
+            IMongoQuery query = Query<PersistentFiddlerSession>.EQ(a => a.SessionGroupId, groupId);
+            var result = repo.Collection.Find(query).SetSortOrder(SortBy.Ascending("_id"));
+
+            var list = new List<PersistentFiddlerSession>();
+            list.AddRange(result);
+
+            return list.ToArray();
+        }
+
         private Session[] LoadSessionsFromGridFs(ObjectId gridFsId)
         {
             var server = MongoClient.GetServer();

@@ -1,0 +1,17 @@
+﻿@model System.Collections.Generic.IReadOnlyList<Star.FiddlerRunner.Common.PersistentFiddlerSession>
+
+@{
+    ViewBag.Title = "title";
+}
+
+<h2>title</h2>
+
+<ul>
+    @foreach (var session in Model)
+    {
+        <li>@session.Id
+            <ul><a href="@session.Url" target="_blank">@Star.FiddlerRunner.Common.Utility.Elispie(@session.Url, 150)</a></ul>
+            <ul>Length: @session.Len</ul>
+        </li>
+    }
+</ul>

@@ -1,0 +1,14 @@
+﻿@model System.Collections.Generic.IReadOnlyList<Star.FiddlerRunner.Common.SessionGroup>
+
+@{
+    ViewBag.Title = "title";
+}
+
+<h2>title</h2>
+
+<ul>
+    @foreach (var group in Model)
+    {
+        <li>@group.Id - @Html.ActionLink("Sessions", "Sessions", "Group", new { id = group.Id }, new { })</li>
+    }
+</ul>
