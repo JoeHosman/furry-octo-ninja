@@ -6,6 +6,8 @@ using Common.Logging;
 using Fiddler;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+using MongoDB.Driver.Wrappers;
 
 namespace Star.FiddlerRunner.Common
 {
@@ -123,11 +125,10 @@ namespace Star.FiddlerRunner.Common
         {
             var repo = new MongoRepository.MongoRepository<SessionGroupSequence>();
 
-            var result = repo.All();
+            var result = repo.Collection.FindAll().SetSortOrder(SortBy.Descending("_id"));
 
             var list = new List<SessionGroupSequence>();
             list.AddRange(result);
-
 
             return list.ToArray();
         }
