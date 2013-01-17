@@ -10,6 +10,7 @@
     @foreach (var session in Model)
     {
         <li>@session.Id
+            <ul><a href="https://localhost:7777/Response?@session.Id" target="_blank"><i>Cached Response</i></a></ul>
             <ul><a href="@session.Url" target="_blank">@Star.FiddlerRunner.Common.Utility.Elispie(@session.Url, 150)</a></ul>
             <ul>Length: @session.Len</ul>
         </li>
