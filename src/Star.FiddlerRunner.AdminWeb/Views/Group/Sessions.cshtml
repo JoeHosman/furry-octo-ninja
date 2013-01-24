@@ -1,10 +1,12 @@
 ﻿@model System.Collections.Generic.IReadOnlyList<Star.FiddlerRunner.Common.PersistentFiddlerSession>
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Sessions";
 }
 
-<h2>title</h2>
+<span style="margin-left: 25px">@Html.ActionLink("Session Sequence Index", "Index", "Sequence") > @Html.ActionLink(@Model[0].SessionGroupSequenceId, "Groups", "Sequence", new { id = Model[0].SessionGroupSequenceId }, new { }) > <i><b>@Model[0].SessionGroupId</b></i></span>
+
+<h2>@ViewBag.Title</h2>
 
 <ul>
     @foreach (var session in Model)

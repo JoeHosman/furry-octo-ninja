@@ -3,8 +3,9 @@
 @{
     ViewBag.Title = "Session Sequences";
 }
-
-<h2>title</h2>
+<span style="margin-left: 25px">@Html.ActionLink("Session Sequence Index", "Index", "Sequence") </span>
+<h2>@ViewBag.Title</h2>
+<h4>A sequence would be defined as an user's journey across a series of web pages until a particular goal is achieved.</h4>
 
 <ul>
     @foreach (var seq in Model)

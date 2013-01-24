@@ -1,10 +1,13 @@
 ﻿@model System.Collections.Generic.IReadOnlyList<Star.FiddlerRunner.Common.SessionGroup>
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Session Sequence's Groups";
 }
+<span style="margin-left: 25px">@Html.ActionLink("Session Sequence Index", "Index", "Sequence") > <i><b>@Model[0].SessionGroupSequence</b></i></span>
 
-<h2>title</h2>
+<h2>@ViewBag.Title</h2>
+<h4>This <i>Session Sequence</i> contains the following group of sessions</h4>
+
 
 <ul>
     @foreach (var group in Model)

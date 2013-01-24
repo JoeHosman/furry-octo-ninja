@@ -31,23 +31,23 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Common.Logging">
-      <HintPath>..\FiddlerTestRunnerConsole\bin\Debug\Common.Logging.dll</HintPath>
+      <HintPath>..\Star.FiddlerRunner.AdminWeb\bin\Common.Logging.dll</HintPath>
     </Reference>
     <Reference Include="FiddlerCore4">
-      <HintPath>..\FiddlerTestRunnerConsole\bin\Debug\FiddlerCore4.dll</HintPath>
+      <HintPath>..\Star.FiddlerRunner.AdminWeb\bin\FiddlerCore4.dll</HintPath>
     </Reference>
     <Reference Include="Ionic.Zip">
-      <HintPath>..\FiddlerTestRunnerConsole\bin\Debug\Ionic.Zip.dll</HintPath>
+      <HintPath>..\Star.FiddlerRunner.AdminWeb\bin\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="MongoDB.Bson">
-      <HintPath>..\FiddlerTestRunnerConsole\bin\Debug\MongoDB.Bson.dll</HintPath>
+      <HintPath>..\Star.FiddlerRunner.AdminWeb\bin\MongoDB.Bson.dll</HintPath>
     </Reference>
     <Reference Include="MongoDB.Driver, Version=1.7.0.4714, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\FiddlerTestRunnerConsole\bin\Debug\MongoDB.Driver.dll</HintPath>
+      <HintPath>..\Star.FiddlerRunner.AdminWeb\bin\MongoDB.Driver.dll</HintPath>
     </Reference>
     <Reference Include="MongoRepository">
-      <HintPath>..\FiddlerTestRunnerConsole\bin\Debug\MongoRepository.dll</HintPath>
+      <HintPath>..\Star.FiddlerRunner.AdminWeb\bin\MongoRepository.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
