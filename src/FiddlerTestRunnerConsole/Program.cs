@@ -98,10 +98,10 @@ namespace FiddlerTestRunnerConsole
                 return;
 
 
-            if (!((oS.oResponse.MIMEType.ToLower().Contains("html") || oS.oResponse.MIMEType.ToLower().Contains("html"))))
-            {
-                return;
-            }
+            //if (!((oS.oResponse.MIMEType.ToLower().Contains("html") || oS.oResponse.MIMEType.ToLower().Contains("html"))))
+            //{
+            //    return;
+            //}
 
             if (oS.uriContains("localhost"))
             {
@@ -282,19 +282,16 @@ namespace FiddlerTestRunnerConsole
                         break;
 
                     case 'r':
-                        _record = !_record;
-
-                        Log.Info(_record ? "Recording." : "NOT Recording");
+                        ToggleRecording();
                         break;
 
                     // Forgetful streaming
                     case 's':
-                        Log.Info("Cleared Session Sequence");
-                        _sessionGroupSequence = SessionGroupSequence.Empty;
+                        ClearSessionSequence();
+                        ClearSessionGroup();
                         break;
                     case 'g':
-                        Log.Info("Cleared Session Group");
-                        _sessionGroup = SessionGroup.Empty;
+                        ClearSessionGroup();
                         break;
 
                 }
@@ -306,6 +303,25 @@ namespace FiddlerTestRunnerConsole
                     inputCount = 0;
                 }
             } while (_needMoreInput);
+        }
+
+        private static void ToggleRecording()
+        {
+            _record = !_record;
+
+            Log.Info(_record ? "Recording." : "NOT Recording");
+        }
+
+        private static void ClearSessionGroup()
+        {
+            Log.Info("Cleared Session Group");
+            _sessionGroup = SessionGroup.Empty;
+        }
+
+        private static void ClearSessionSequence()
+        {
+            Log.Info("Cleared Session Sequence");
+            _sessionGroupSequence = SessionGroupSequence.Empty;
         }
 
         #endregion
