@@ -5,8 +5,14 @@ namespace Star.FiddlerRunner.Common
 {
     public interface ISessionRepository
     {
-        SessionGroupSequence CreateNewSessionGroupSequence();
-        SessionGroup CreateNewSessionGroup(SessionGroupSequence sessionGroupSequence);
+        SessionGroupSequence CreateNewSessionGroupSequence(string url);
+        SessionGroupSequence GetSessionGroupSequence(string sequenceId);
+        SessionGroupSequence SaveSessionGroupSequence(SessionGroupSequence sessionGroupSequence);
+
+        SessionGroup CreateNewSessionGroup(SessionGroupSequence sessionGroupSequence, string url);
+        SessionGroup GetSessionGroup(string groupId);
+        SessionGroup SaveSessionGroup(SessionGroup sessionGroup);
+
 
         PersistentFiddlerSession SaveSession(Session oSession, SessionGroup sessionGroup);
         PersistentFiddlerSession GetSessionWithId(string id);

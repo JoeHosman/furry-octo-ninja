@@ -17,7 +17,7 @@ namespace FiddlerTestRunnerConsole
         private static ISessionRepository _sessionRepo;
         private static SessionGroupSequence _sessionGroupSequence = SessionGroupSequence.Empty;
         private static SessionGroup _sessionGroup = SessionGroup.Empty;
-        
+
         static void Main(string[] args)
         {
             Log.Debug("Main called...");
@@ -108,19 +108,22 @@ namespace FiddlerTestRunnerConsole
                 return;
             }
 
+            var url = oS.url;
+
             if (SessionGroupSequence.Empty.Equals(_sessionGroupSequence))
             {
                 Log.Debug("Empty group sequence; creating new one.");
-                _sessionGroupSequence = _sessionRepo.CreateNewSessionGroupSequence();
+                _sessionGroupSequence = _sessionRepo.CreateNewSessionGroupSequence(url);
+                _sessionGroup = SessionGroup.Empty;
             }
 
             if (SessionGroup.Empty.Equals(_sessionGroup))
             {
                 Log.Debug("Empty group; creating new one.");
-                _sessionGroup = _sessionRepo.CreateNewSessionGroup(_sessionGroupSequence);
+                _sessionGroup = _sessionRepo.CreateNewSessionGroup(_sessionGroupSequence, url);
             }
 
-            Log.Info(m => m("Saving Session: {0}", Utility.Elispie(oS.url, 50)));
+            Log.Info(m => m("Saving Session: {0}", Utility.Elispie(url, 50)));
             _sessionRepo.SaveSession(oS, _sessionGroup);
         }
 

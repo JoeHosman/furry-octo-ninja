@@ -7,7 +7,7 @@ using Fiddler;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
-using MongoDB.Driver.Wrappers;
+using MongoRepository;
 
 namespace Star.FiddlerRunner.Common
 {
@@ -15,15 +15,16 @@ namespace Star.FiddlerRunner.Common
     {
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
         private static readonly MongoClient MongoClient;
+        private SessionGroupSequence _sessionGroupSequence;
 
         static MongoSessionRepository()
         {
             MongoClient = new MongoClient(ConfigurationManager.ConnectionStrings["MongoServerSettings"].ConnectionString);
         }
 
-        public SessionGroupSequence CreateNewSessionGroupSequence()
+        public SessionGroupSequence CreateNewSessionGroupSequence(string url)
         {
-            var sessionGroupSequence = new SessionGroupSequence();
+            var sessionGroupSequence = new SessionGroupSequence(){Name = url, Address = url};
 
             var repo = new MongoRepository.MongoRepository<SessionGroupSequence>();
 
@@ -34,7 +35,27 @@ namespace Star.FiddlerRunner.Common
             return sessionGroupSequence;
         }
 
-        public SessionGroup CreateNewSessionGroup(SessionGroupSequence sessionGroupSequence)
+        public SessionGroupSequence GetSessionGroupSequence(string sequenceId)
+        {
+            if (string.IsNullOrEmpty(sequenceId))
+                throw new ArgumentNullException("Sequence id must not be null or empty.");
+
+            var repo = new MongoRepository.MongoRepository<SessionGroupSequence>();
+            _sessionGroupSequence = repo.GetById(sequenceId);
+
+            return _sessionGroupSequence;
+        }
+
+        public SessionGroupSequence SaveSessionGroupSequence(SessionGroupSequence sessionGroupSequence)
+        {
+            var repo = new MongoRepository.MongoRepository<SessionGroupSequence>();
+
+            sessionGroupSequence = repo.Update(sessionGroupSequence);
+
+            return sessionGroupSequence;
+        }
+
+        public SessionGroup CreateNewSessionGroup(SessionGroupSequence sessionGroupSequence, string url)
         {
             if (SessionGroupSequence.Empty.Equals(sessionGroupSequence))
             {
@@ -42,7 +63,7 @@ namespace Star.FiddlerRunner.Common
                 throw new ArgumentNullException("sessionGroupSequence cannot be empty!");
             }
 
-            var sessionGroup = new SessionGroup { SessionGroupSequence = sessionGroupSequence.Id };
+            var sessionGroup = new SessionGroup { SessionGroupSequence = sessionGroupSequence.Id, Name = url, Address = url };
 
             var repo = new MongoRepository.MongoRepository<SessionGroup>();
 
@@ -52,6 +73,24 @@ namespace Star.FiddlerRunner.Common
 
             return sessionGroup;
 
+        }
+
+        public SessionGroup GetSessionGroup(string groupId)
+        {
+            var repo = new MongoRepository.MongoRepository<SessionGroup>();
+
+            var sessionGroup = repo.GetById(groupId);
+
+            return sessionGroup;
+        }
+
+        public SessionGroup SaveSessionGroup(SessionGroup sessionGroup)
+        {
+            var repo = new MongoRepository.MongoRepository<SessionGroup>();
+
+            sessionGroup = repo.Update(sessionGroup);
+
+            return sessionGroup;
         }
 
         public PersistentFiddlerSession SaveSession(Session oSession, SessionGroup sessionGroup)

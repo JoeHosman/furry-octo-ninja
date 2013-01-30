@@ -1,4 +1,5 @@
-﻿@model IReadOnlyList<Star.FiddlerRunner.Common.SessionGroupSequence>
+﻿@using Star.FiddlerRunner.Common
+@model IReadOnlyList<Star.FiddlerRunner.Common.SessionGroupSequence>
 
 @{
     ViewBag.Title = "Session Sequences";
@@ -10,6 +11,15 @@
 <ul>
     @foreach (var seq in Model)
     {
-        <li>@seq.Id - @Html.ActionLink("Groups", "Groups", new { id = seq.Id })</li>
+        <li>@seq.Id - @Html.ActionLink("Groups", "Groups", new { id = seq.Id })
+            @if (!string.IsNullOrEmpty(seq.Name))
+            {
+                <ul>@Utility.Elispie(seq.Name, 100)</ul>
+                if (!seq.Name.Equals(seq.Address))
+                {
+                <ul>@Utility.Elispie(seq.Address, 200)</ul>
+                }
+            }
+        </li>
     }
 </ul>

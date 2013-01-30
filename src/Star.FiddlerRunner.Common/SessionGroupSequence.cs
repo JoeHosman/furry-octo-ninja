@@ -6,6 +6,7 @@ namespace Star.FiddlerRunner.Common
     public class SessionGroupSequence : Entity
     {
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
+
         protected bool Equals(SessionGroupSequence other)
         {
             if (null == Id)
@@ -27,6 +28,10 @@ namespace Star.FiddlerRunner.Common
         {
             get { return new SessionGroupSequence(); }
         }
+
+        public string Name { get; set; }
+
+        public string Address { get; set; }
 
         public override bool Equals(object obj)
         {

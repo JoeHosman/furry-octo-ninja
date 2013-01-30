@@ -24,6 +24,10 @@ namespace Star.FiddlerRunner.Common
 
         public string SessionGroupSequence { get; set; }
 
+        public string Name { get; set; }
+
+        public string Address { get; set; }
+
         public SessionGroup()
         {
             SessionGroupSequence = Common.SessionGroupSequence.Empty.Id;
