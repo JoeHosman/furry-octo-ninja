@@ -5,3 +5,11 @@ E:\Dev\git\furry-octo-ninja\examples\FiddlerCore\SampleApp\bin\Debug\FiddlerCore
 E:\Dev\git\furry-octo-ninja\examples\FiddlerCore\SampleApp\bin\Debug\FiddlerCore.xml
 E:\Dev\git\furry-octo-ninja\examples\FiddlerCore\SampleApp\obj\Debug\Demo.exe
 E:\Dev\git\furry-octo-ninja\examples\FiddlerCore\SampleApp\obj\Debug\Demo.pdb
+C:\Users\yasine.lakhdari\Documents\GitHub\joe fiddler\furry-octo-ninja\examples\FiddlerCore\SampleApp\bin\Debug\Demo.exe
+C:\Users\yasine.lakhdari\Documents\GitHub\joe fiddler\furry-octo-ninja\examples\FiddlerCore\SampleApp\bin\Debug\Demo.pdb
+C:\Users\yasine.lakhdari\Documents\GitHub\joe fiddler\furry-octo-ninja\examples\FiddlerCore\SampleApp\bin\Debug\FiddlerCore.dll
+C:\Users\yasine.lakhdari\Documents\GitHub\joe fiddler\furry-octo-ninja\examples\FiddlerCore\SampleApp\bin\Debug\FiddlerCore.pdb
+C:\Users\yasine.lakhdari\Documents\GitHub\joe fiddler\furry-octo-ninja\examples\FiddlerCore\SampleApp\bin\Debug\FiddlerCore.xml
+C:\Users\yasine.lakhdari\Documents\GitHub\joe fiddler\furry-octo-ninja\examples\FiddlerCore\SampleApp\obj\Debug\Demo.csprojResolveAssemblyReference.cache
+C:\Users\yasine.lakhdari\Documents\GitHub\joe fiddler\furry-octo-ninja\examples\FiddlerCore\SampleApp\obj\Debug\Demo.exe
+C:\Users\yasine.lakhdari\Documents\GitHub\joe fiddler\furry-octo-ninja\examples\FiddlerCore\SampleApp\obj\Debug\Demo.pdb
