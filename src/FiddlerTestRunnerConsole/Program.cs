@@ -258,7 +258,7 @@ namespace FiddlerTestRunnerConsole
 
         private static void AskUsersInput()
         {
-            Log.Info("AskUsersInput called...");
+            Log.Debug("AskUsersInput called...");
 
             _needMoreInput = true;
             var inputCount = 0;
