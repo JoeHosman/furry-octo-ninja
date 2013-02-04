@@ -17,6 +17,7 @@ namespace FiddlerTestRunnerConsole
         private static ISessionRepository _sessionRepo;
         private static SessionGroupSequence _sessionGroupSequence = SessionGroupSequence.Empty;
         private static SessionGroup _sessionGroup = SessionGroup.Empty;
+        private static bool _strict = true;
 
         static void Main(string[] args)
         {
@@ -98,10 +99,10 @@ namespace FiddlerTestRunnerConsole
                 return;
 
 
-            //if (!((oS.oResponse.MIMEType.ToLower().Contains("html") || oS.oResponse.MIMEType.ToLower().Contains("html"))))
-            //{
-            //    return;
-            //}
+            if (_strict && !((oS.oResponse.MIMEType.ToLower().Contains("html") || oS.oResponse.MIMEType.ToLower().Contains("html"))))
+            {
+                return;
+            }
 
             if (oS.uriContains("localhost"))
             {
