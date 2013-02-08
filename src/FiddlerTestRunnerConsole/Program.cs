@@ -72,7 +72,9 @@ namespace FiddlerTestRunnerConsole
             #endregion
 
             // NOTE: In the next line, you can pass 0 for the port (instead of 8877) to have FiddlerCore auto-select an available port
-            FiddlerApplication.Startup(8877, fiddlerCoreStartupFlags);
+            const int iListenPort = 8877;
+            FiddlerApplication.Startup(iListenPort, fiddlerCoreStartupFlags);
+            FiddlerApplication.Log.LogFormat("Proxy listening port:\t{0}", iListenPort);
 
             FiddlerApplication.Log.LogFormat("Starting with settings: [{0}]", fiddlerCoreStartupFlags);
             FiddlerApplication.Log.LogFormat("Using Gateway: {0}", (CONFIG.bForwardToGateway) ? "TRUE" : "FALSE");
@@ -265,8 +267,8 @@ namespace FiddlerTestRunnerConsole
             var inputCount = 0;
             do
             {
-                Console.WriteLine("\nEnter a command [G=Clear Group; S=Clear Session;\n\tR=Toggle Recording; Q=Quit]:");
-                Console.Write(">");
+                Console.WriteLine("\nEnter a command\n\tR\tToggle Recording\n\n\tS\tClear Sequence\n\tG\tClear Group\n\tQ\tQuit]:");
+                Console.Write(">\t");
                 ConsoleKeyInfo cki = Console.ReadKey();
                 Console.WriteLine();
                 const int inputCleanupThreshold = 5;
@@ -300,7 +302,7 @@ namespace FiddlerTestRunnerConsole
                 if (++inputCount > inputCleanupThreshold)
                 {
                     var count = inputCount;
-                    Log.Info(m => m("input count '{0}' > InputCleanupThreshold '{1}'", count, inputCleanupThreshold));
+                    Log.Debug(m => m("input count '{0}' > InputCleanupThreshold '{1}'", count, inputCleanupThreshold));
                     Utility.GarbageCollection();
                     inputCount = 0;
                 }
@@ -316,12 +318,18 @@ namespace FiddlerTestRunnerConsole
 
         private static void ClearSessionGroup()
         {
+            if (Equals(SessionGroup.Empty, _sessionGroup))
+                return;
+
             Log.Info("Cleared Session Group");
             _sessionGroup = SessionGroup.Empty;
         }
 
         private static void ClearSessionSequence()
         {
+            if (Equals(SessionGroupSequence.Empty, _sessionGroupSequence))
+                return;
+
             Log.Info("Cleared Session Sequence");
             _sessionGroupSequence = SessionGroupSequence.Empty;
         }
