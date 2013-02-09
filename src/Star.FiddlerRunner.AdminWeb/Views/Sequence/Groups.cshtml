@@ -13,7 +13,7 @@
 <ul>
     @foreach (var group in Model)
     {
-        <li>@group.Id - @Html.ActionLink("Sessions", "Sessions", "Group", new { id = group.Id }, new { })
+        <li>@group.Id.ToUpper() - @Html.ActionLink("Sessions", "Sessions", "Group", new { id = group.Id }, new { })
             @if (!string.IsNullOrEmpty(group.Name))
             {
                 <ul>@Utility.Elispie(group.Name, 100)</ul>
