@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="FiddlerRunnerGUI.Controls.ProxyListeningPortSettingControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="150">
+    <StackPanel Orientation="Horizontal" Margin="5 0">
+        <TextBlock Margin="10 5">Listening Port:</TextBlock>
+        <TextBox Width="40" HorizontalContentAlignment="Center">8877</TextBox>
+    </StackPanel>
+</UserControl>
