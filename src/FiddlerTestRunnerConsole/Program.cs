@@ -267,7 +267,7 @@ namespace FiddlerTestRunnerConsole
             var inputCount = 0;
             do
             {
-                Console.WriteLine("\nEnter a command\n\tR\tToggle Recording\n\n\tS\tClear Sequence\n\tG\tClear Group\n\tQ\tQuit]:");
+                Console.WriteLine("\nEnter a command\n\tR\tToggle Recording\n\n\tS\tClear Sequence\n\tG\tClear Group\n\tQ\tQuit");
                 Console.Write(">\t");
                 ConsoleKeyInfo cki = Console.ReadKey();
                 Console.WriteLine();
@@ -312,6 +312,8 @@ namespace FiddlerTestRunnerConsole
         private static void ToggleRecording()
         {
             _record = !_record;
+
+            Console.Title = (_record) ? "Recording" : "NOT Recording";
 
             Log.Info(_record ? "Recording." : "NOT Recording");
         }
