@@ -1,7 +1,7 @@
 ﻿<Window xmlns:Controls="clr-namespace:FiddlerRunnerGUI.Controls"  x:Class="FiddlerRunnerGUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
+        Title="Fiddler Runner" Height="350" Width="525">
     <Grid Margin="5" >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>

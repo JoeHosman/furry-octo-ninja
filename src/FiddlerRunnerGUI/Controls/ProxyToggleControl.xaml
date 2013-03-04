@@ -8,6 +8,6 @@
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
         <Button Margin="20 0 10 0 " Width="100" HorizontalAlignment="Left">Turn On</Button>
         <TextBlock Margin="0 5">Proxy:</TextBlock>
-        <TextBlock  Margin="5 5" Foreground="DarkRed">Off</TextBlock>
+        <TextBlock  Margin="5 5" Foreground="DarkRed" DataContext="{Binding }"></TextBlock>
     </StackPanel>
 </UserControl>
